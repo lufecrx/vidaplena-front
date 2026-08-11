@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "./tokens.css";
+@import "./pallete.css";
 
 :root {
   --background: #ffffff;
