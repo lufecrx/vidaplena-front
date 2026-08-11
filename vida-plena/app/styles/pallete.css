@@ -1,0 +1,164 @@
+/**
+  Vida Plena Design System 
+  Cores e gradientes compartilhados da aplicação. 
+  Os tokens devem ser usados conforme a finalidade indicada em cada grupo. 
+*/
+
+@import "tailwindcss";
+
+@theme inline {
+  
+  /* =========================================================
+   * MARCA
+   * ========================================================= */
+
+  --color-vp-azul-900: #0D2D5E;
+  --color-vp-azul-700: #1A4B8C;
+  --color-vp-azul-500: #2E6CAE;
+
+
+  /* =========================================================
+   * BEM-ESTAR
+   * ========================================================= */
+
+  --color-vp-teal-700: #0E7490;
+  --color-vp-teal-500: #06B6D4;
+
+
+  /* =========================================================
+   * SUCESSO
+   * ========================================================= */
+
+  --color-vp-verde-700: #15803D;
+  --color-vp-verde-500: #22C55E;
+
+
+  /* =========================================================
+   * ALERTA
+   * ========================================================= */
+
+  --color-vp-ambar-700: #B45309;
+  --color-vp-ambar-500: #F59E0B;
+
+
+  /* =========================================================
+   * PERIGO
+   * ========================================================= */
+
+  --color-vp-coral-700: #B91C1C;
+  --color-vp-coral-500: #EF4444;
+
+
+  /* =========================================================
+   * CUIDADOR / PRESENCIAL
+   * ========================================================= */
+
+  --color-vp-violeta-700: #6D28D9;
+  --color-vp-violeta-500: #8B5CF6;
+
+
+  /* =========================================================
+   * INFANTIL
+   * ========================================================= */
+
+  --color-vp-rosa-700: #BE185D;
+  --color-vp-rosa-500: #EC4899;
+
+
+  /* =========================================================
+   * PERSONAL TRAINER
+   * ========================================================= */
+
+  --color-vp-laranja-700: #C2410C;
+  --color-vp-laranja-500: #F97316;
+
+
+  /* =========================================================
+   * INFORMAÇÃO
+   * ========================================================= */
+
+  --color-vp-info-700: #2563C4;
+
+
+  /* =========================================================
+   * CORES NEUTRAS
+   * ========================================================= */
+
+  --color-vp-slate-700: #334155;
+  --color-vp-slate-500: #64748B;
+
+
+  /* =========================================================
+   * CORES FUNCIONAIS
+   *
+   * Use para ações e estados gerais da interface.
+   * ========================================================= */
+
+  --color-vp-primario: var(--color-vp-azul-700);
+  --color-vp-bem-estar: var(--color-vp-teal-500);
+  --color-vp-sucesso: var(--color-vp-verde-500);
+  --color-vp-alerta: var(--color-vp-ambar-500);
+  --color-vp-perigo: var(--color-vp-coral-500);
+  --color-vp-info: var(--color-vp-info-700);
+
+
+  /* =========================================================
+   * PERFIS DE USUÁRIO
+   *
+   * Use para identificação visual de cada perfil.
+   * ========================================================= */
+
+  --color-vp-perfil-paciente: var(--color-vp-azul-700);
+  --color-vp-perfil-medico: var(--color-vp-teal-700);
+  --color-vp-perfil-nutricion: var(--color-vp-verde-700);
+  --color-vp-perfil-personal: var(--color-vp-laranja-700);
+  --color-vp-perfil-cuidador: var(--color-vp-violeta-700);
+  --color-vp-perfil-empresa: var(--color-vp-slate-700);
+  --color-vp-perfil-clinica: var(--color-vp-azul-900);
+  --color-vp-perfil-infantil: var(--color-vp-rosa-700);
+
+
+  /* =========================================================
+   * STATUS DE CONSULTA
+   *
+   * Use para badges, ícones e indicadores de status.
+   * ========================================================= */
+
+  --color-vp-status-confirmada: var(--color-vp-verde-700);
+  --color-vp-status-andamento: var(--color-vp-azul-700);
+  --color-vp-status-aguardando: var(--color-vp-ambar-700);
+  --color-vp-status-urgencia: var(--color-vp-coral-700);
+  --color-vp-status-online: var(--color-vp-teal-700);
+  --color-vp-status-presencial: var(--color-vp-violeta-700);
+  --color-vp-status-cancelada: var(--color-vp-slate-500);
+
+
+  /* =========================================================
+   * GRADIENTES
+   *
+   * Geram classes Tailwind:
+   *
+   * bg-brand-primary
+   * bg-brand-wellness
+   * bg-brand-vitality
+   * ========================================================= */
+
+  --background-image-brand-primary: linear-gradient(
+    135deg,
+    var(--color-vp-azul-900),
+    var(--color-vp-azul-700),
+    var(--color-vp-azul-500)
+  );
+
+  --background-image-brand-wellness: linear-gradient(
+    135deg,
+    var(--color-vp-azul-700),
+    var(--color-vp-teal-500)
+  );
+
+  --background-image-brand-vitality: linear-gradient(
+    135deg,
+    var(--color-vp-teal-700),
+    var(--color-vp-verde-500)
+  );
+}
