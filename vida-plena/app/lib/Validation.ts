@@ -53,7 +53,8 @@ export function emailValido(email: string): boolean {
       return false;
    }
 
-   // Seria interessante enviar um email para o usuario ("Confirme a sua conta")
+   // IDEIA: Seria interessante enviar um email para o usuario ("Confirme a sua conta").
+   // Caso o e-mail fosse enviado com sucesso retornava true.
 
    return true;
 }
