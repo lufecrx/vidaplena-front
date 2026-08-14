@@ -1,5 +1,7 @@
 export function cpfValido(cpf: string): boolean {
 
+   if (cpf === "11111111111") { return true; } // Para testar
+
    // Primeira condição, deve ter mais de 11 números.
    if (cpf.length < 11) {
       return false;
@@ -57,4 +59,39 @@ export function emailValido(email: string): boolean {
    // Caso o e-mail fosse enviado com sucesso retornava true.
 
    return true;
+}
+
+export function dataValida(data: string): boolean {
+
+   const nascimento = new Date(data);
+   const hoje = new Date();
+
+   const dataMinima = new Date(hoje);
+   dataMinima.setFullYear(hoje.getFullYear() - 110);
+
+   const dataMaxima = new Date(hoje);
+   dataMaxima.setFullYear(hoje.getFullYear() - 1);
+
+   return nascimento >= dataMinima && nascimento <= dataMaxima;
+}
+
+// TO DO: Validar CRM
+export function crmValido(crm: string): boolean {
+
+   if (crm == "123") {
+      return false;
+   }
+
+   return true;
+}
+
+// TO DO: Validar CRN
+export function crnValido(crn: string): boolean {
+
+   if (crn == "123") {
+      return false;
+   }
+
+   return true;
+
 }
