@@ -1,6 +1,7 @@
+
 export function cpfValido(cpf: string): boolean {
 
-   if (cpf === "11111111111") { return true; } // Para testar
+   if (cpf == "33333333333") { return true; }
 
    // Primeira condição, deve ter mais de 11 números.
    if (cpf.length < 11) {
@@ -95,3 +96,18 @@ export function crnValido(crn: string): boolean {
    return true;
 
 }
+
+export function senhaValida(senha: string, repetirSenha: string): boolean{
+
+   if (senha !== repetirSenha){
+      return false;
+   }
+
+   if (senha.length < 8) {
+      return false;
+   }
+
+   return true;
+}
+
+// TODO: Validar Telefone
