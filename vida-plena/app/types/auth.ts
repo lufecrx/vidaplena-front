@@ -22,35 +22,6 @@ export interface UsuarioResponse {
   dataCriacao: string
 }
 
-/* O número define qual tipo de usuario. Começando de 1, 2, 3, e assim por diante.
-export interface Usuario {
-   nome: string
-   cpf: string
-   email: string
-   senha: string
-   telefone: string
-   dataNascimento: string
-}
-
-export interface Paciente extends Usuario {
-   perfil: number
-}
-
-export interface Cuidador extends Usuario {
-   perfil: number
-}
-
-export interface Medico extends Usuario {
-   perfil: number
-   crm: string
-}
-
-export interface Nutricionista extends Usuario {
-   perfil: number
-   crn: string
-}
-*/
-
 export interface LoginRequest {
   email: string
   senha: string
