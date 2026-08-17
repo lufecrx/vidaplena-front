@@ -1,12 +1,23 @@
 import { api } from '../../api'
-import type { CriarUsuarioRequest } from '../types/admin'
+import type { CriarUsuarioRequest, Usuario, PaginaUsuariosResponse } from '../types/admin'
 
 export const adminService = {
 
-   async buscarConta(usuarioId: string) {
-      const result = await api.get(`/api/v1/usuarios/${ usuarioId }`);
+   async buscarConta(cpf: string): Promise<Usuario> {
+      const response = await api.get(`/api/v1/usuarios/cpf/${cpf}`);
 
-      return result;
+      return response.data;
+   },
+
+   async listarUsuarios(page = 0, size = 50, sort = "nome,ASC"): Promise<PaginaUsuariosResponse> {
+      const response = await api.get("/api/v1/usuarios", {
+         params: {
+            page,
+            size,
+            sort,
+         },
+      });
+      return response.data;
    },
 
    async cadastrarUsuario(dados: CriarUsuarioRequest) {
@@ -14,39 +25,37 @@ export const adminService = {
       return data;
    },
 
-   /*    TODO: NÃO TEM UM ENDPOINT REFERENTE A ISSO
    async excluirConta(usuarioId: string) {
-      const result = await api.delete(`/api/v1/usuarios/${ usuarioId }/status`)
+      const result = await api.delete(`/api/v1/usuarios/${usuarioId}`)
 
-      return result;
+      return result.data.message;
    },
-   */
 
    async ativarConta(usuarioId: string) {
-      const result = await api.patch(`/api/v1/usuarios/${ usuarioId }/status`,
+      const response = await api.patch(`/api/v1/usuarios/${usuarioId}/status`,
          {
             status: "ATIVO",
          })
 
-      return result.data;
+      return response.data;
    },
 
    async desativarConta(usuarioId: string) {
-      const result = await api.patch(`/api/v1/usuarios/${ usuarioId }/status`,
+      const response = await api.patch(`/api/v1/usuarios/${usuarioId}/status`,
          {
             status: "INATIVO",
          })
 
-      return result.data;
+      return response.data;
    },
 
    async bloquearConta(usuarioId: string) {
-      const result = await api.patch(`/api/v1/usuarios/${ usuarioId }/status`,
+      const response = await api.patch(`/api/v1/usuarios/${usuarioId}/status`,
          {
             status: "BLOQUEADO",
          })
 
-      return result.data;
+      return response.data;
    }
 
 }
