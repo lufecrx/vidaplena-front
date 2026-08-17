@@ -17,9 +17,10 @@ export interface CriarUsuarioRequest {
    senha: string
    telefone: string
    dataNascimento: string
+   tipo: TipoUsuario[]
 }
 
-export interface requisitarUsuario {
+export interface Usuario {
    id: string
    nome: string
    cpf: string
@@ -27,5 +28,15 @@ export interface requisitarUsuario {
    telefone: string
    dataNascimento: string
    status: string
-   tipo: TipoUsuario[]
+   tipos: TipoUsuario[]
+}
+
+export interface PaginaUsuariosResponse {
+   content: Usuario[];
+   pageable: {
+      pageNumber: number;
+      pageSize: number;
+   };
+   totalPages: number;
+   totalElements: number;
 }
