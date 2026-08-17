@@ -1,12 +1,12 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatarCPF, limparCPF } from "@/app/lib/Formatters";
 import { cpfValido, emailValido, dataValida, crmValido, crnValido } from "@/app/lib/Validation";
-
+import { CriarUsuarioRequest } from "@/app/types/admin";
+import { adminService } from "@/app/services/adminService";
 import Button from "@/app/components/Button";
-// TO DO: Cuidador precisa de que campo?
+
 export default function CadastroUsuarios() {
    const router = useRouter();
    const [cpf, setCpf] = useState("");
@@ -60,7 +60,23 @@ export default function CadastroUsuarios() {
          return;
       }
 
-      cadastrarUsuario(dados);
+      enviarCadastro(dados);
+   }
+
+   function enviarCadastro(dados: Record<string, FormDataEntryValue>) {
+
+      console.log("sucesso");
+
+      const dadosUsuario: CriarUsuarioRequest = {
+        nome: String(dados.name),
+        cpf: String(dados.cpf),
+         email: String(dados.email),
+        senha: String(dados.senha),
+        telefone: String(dados.telefone),
+        dataNascimento: String(dados.dataNascimento),
+      }
+
+      adminService.cadastrarUsuario(dadosUsuario);
    }
 
    return (
@@ -153,18 +169,4 @@ export default function CadastroUsuarios() {
          </form>
       </div>
    )
-}
-
-// TO DO: Testar o fetch e saber se ele fica aqui ou se deve ser movido.
-async function cadastrarUsuario(dados: Record<string, FormDataEntryValue>) {
-
-   console.log("sucesso");
-
-   await fetch("/api/v1/usuarios", {
-      method: "POST",
-      headers: {
-         "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dados),
-   });
 }

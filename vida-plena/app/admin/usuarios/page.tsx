@@ -1,22 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { formatarCPF, limparCPF } from "@/app/lib/Formatters";
-
 import Button from "@/app/components/Button";
-import { UsuarioResponse } from "@/app/types/auth";
-import Image from "next/image";
+import { adminService } from "@/app/services/adminService";
+import { requisitarUsuario } from "@/app/types/admin";
 
 export default function Usuarios() {
    const [busca, setBusca] = useState("");
    const [usuarioEncontrado, setUsuarioEncontrado] = useState(false);
-   const [usuario, setUsuario] = useState<UsuarioResponse | null>(null);
+   const [usuario, setUsuario] = useState<requisitarUsuario | null>(null);
    const [resultados, setResultados] = useState<string[]>([]);
 
-   // Objetos para teste
-   // QUAIS SÃO AS CLASSES DO BANCO DE DADOS?
-   // COMO PERFIL DEVE SER ENVIADO? STRING? INT?
    const CpfsParaTeste = [
       "12345678910",
       "11111111111",
@@ -45,81 +42,21 @@ export default function Usuarios() {
       setBusca(cpf);
       setResultados([]);
 
+      //TODO
       // setUsuario() Envia para o backend aqui e recebe os dados do usuário. Chamar pelo ID?
-      let usuarioTeste: UsuarioResponse | null = null;
-      switch (cpf){
-         case "12345678910":
-            usuarioTeste = {
-               id: "1",
-               nome: "João da Silva",
-               email: "joao@email.com",
-               cpf: "12345678910",
-               senha: 123,
-               telefone: "75999999999",
-               status: "ATIVO",
-               tipos: ["MEDICO"],
-               dataNascimento: "1985-06-15",
-               dataCriacao: "2026-08-01",
-            };
-            break;
+      //let usuarioTeste: requisitarUsuario | null = null;
 
-         case "11111111111":
-            usuarioTeste = {
-               id: "2",
-               nome: "Maria Oliveira",
-               email: "maria@email.com",
-               cpf: "11111111111",
-               telefone: "75988888888",
-               senha: 123,
-               status: "INATIVO",
-               tipos: ["PACIENTE"],
-               dataNascimento: "1992-03-22",
-               dataCriacao: "2026-08-02",
-            };
-            break;
 
-         case "12354312355":
-            usuarioTeste = {
-               id: "3",
-               nome: "Carlos Santos",
-               email: "carlos@email.com",
-               cpf: "12354312355",
-               telefone: "75977777777",
-               senha: 123,
-               status: "ATIVO",
-               tipos: ["RECEPCIONISTA"],
-               dataNascimento: "1978-11-10",
-               dataCriacao: "2026-08-03",
-            };
-            break;
-
-         case "34565487623":
-            usuarioTeste = {
-               id: "4",
-               nome: "Ana Costa",
-               email: "ana@email.com",
-               cpf: "34565487623",
-               telefone: "75966666666",
-               senha: 123,
-               status: "INATIVO",
-               tipos: ["PACIENTE"],
-               dataNascimento: "1988-07-05",
-               dataCriacao: "2026-08-04",
-            };
-            break;
-
-         default:
-            console.log("Usuario não encontrado!");
-            setUsuario(null);
-            break;
-      }
-
-      setUsuario(usuarioTeste);
-      setUsuarioEncontrado(true);
+      //setUsuario(adminService.buscarConta(cpf));
+      //setUsuarioEncontrado(true);
    }
 
    return (
-      <div className="gerenciar-usuarios-container" style={{ border:"1px solid black", padding:"10px", borderRadius:"10px", display:"flex", flexDirection:"column", gap:"20px" }}>
+      <div className="gerenciar-usuarios-container"
+         style={{
+            border: "1px solid black", padding: "10px", borderRadius: "10px", display: "flex", flexDirection: "column", gap: "20px",
+            backgroundColor:"white", color:"black"
+         }}>
          <Button>
             <Link href={"/admin/usuarios/novo"}>
                Cadastrar novo usuario
@@ -154,7 +91,7 @@ export default function Usuarios() {
                   display: "flex", flexDirection: "row",
                   gap: "20px", border: "1.5px solid black",
                   borderRadius: "10px", padding: "10px",
-                  backgroundColor:"", color:"white"
+                  backgroundColor:"", color:"black"
                }}
             >
                <div
@@ -165,7 +102,7 @@ export default function Usuarios() {
                   }}
                >
                   <Image
-                     src={usuario?.fotoPerfil || "/images/DefaultUserImage.png"}
+                     src={"/images/DefaultUserImage.png"}
                      alt="User not found"
                      width={200}
                      height={200}
@@ -190,7 +127,7 @@ export default function Usuarios() {
                            <label>CPF: {usuario?.cpf}</label>
                         </div>
                         <div className="campo-container">
-                           <label>Data de Nascimento: {usuario?.dataNascimento}</label>
+                           <label>Data de Nascimento: </label>
                         </div>
                      </div>
                      <div className="Secondary user-info">
@@ -211,7 +148,7 @@ export default function Usuarios() {
                         */}
 
                         <div className="campo-container">
-                           <label>Senha: {usuario?.senha}</label>
+                           <label>Senha: </label>
                         </div>
 
                         <div className="campo-container">
@@ -224,12 +161,13 @@ export default function Usuarios() {
                   </div>
                   <div className="Admin-buttons" style={{ display:"flex", flexDirection:"row", gap:"20px" }}>
                      {usuario?.status === "ATIVO" &&
-                        <Button>Inativar</Button>
+                        <Button onClick={() => adminService.desativarConta(usuario.cpf)}>Desativar</Button>
                      }
                      {usuario?.status === "INATIVO" &&
-                        <Button>Ativar</Button>
+                        <Button onClick={() => adminService.ativarConta(usuario.cpf)}>Ativar</Button>
                      }
-                     <Button variant="danger" >Excluir</Button>
+                     <Button variant="danger" onClick={() => adminService.bloquearConta(usuario.cpf)}>Bloquear</Button>
+                     <Button variant="danger" onClick={() => adminService.excluirConta(usuario.cpf)}>Excluir</Button>
                   </div>
                </div>
             </div>}

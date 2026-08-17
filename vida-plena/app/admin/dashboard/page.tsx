@@ -8,7 +8,7 @@ export default function AdminPage() {
       <div className="Dashboard-container">
          <h1>Dashboard do administrador</h1>
 
-         <Button variant="outline" size="lg">
+         <Button size="lg">
             <Link href={"/admin/usuarios"}>
                Gerenciar usuarios
             </Link>
