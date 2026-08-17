@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatarCPF, limparCPF } from "@/app/lib/Formatters";
-import { cpfValido, emailValido, dataValida, crmValido, crnValido } from "@/app/lib/Validation";
-import { CriarUsuarioRequest } from "@/app/types/admin";
+import { cpfValido, emailValido, dataValida, crmValido, crnValido, senhaValida } from "@/app/lib/Validation";
+import { CriarUsuarioRequest, TipoUsuario } from "@/app/types/admin";
 import { adminService } from "@/app/services/adminService";
 import Button from "@/app/components/Button";
 
@@ -14,6 +14,7 @@ export default function CadastroUsuarios() {
       cpf: false,
       email: false,
       data: false,
+      telefone: false,
       senha: false,
       crm: false,
       crn:false,
@@ -41,17 +42,19 @@ export default function CadastroUsuarios() {
 
       const emailInvalido = !emailValido(String(dados.email));
       const cpfInvalido = !cpfValido(cpf);
-      const senhaInvalida = dados.senha !== dados.repetirSenha;
+      const senhaInvalida = !senhaValida(String(dados.senha), String(dados.repetirSenha));
       const dataInvalida = !dataValida(dataNascimento);
 
       const crmInvalido = campoExtra.crm ? !crmValido(String(dados.crm)) : false;
       const crnInvalido = campoExtra.crn ? !crnValido(String(dados.crn)) : false;
 
+      // TODO: Campo Telefone
       showCampoInvalido({
          email: emailInvalido,
          cpf: cpfInvalido,
          data: dataInvalida,
          senha: senhaInvalida,
+         telefone: false,
          crm: crmInvalido,
          crn: crnInvalido,
       });
@@ -65,15 +68,16 @@ export default function CadastroUsuarios() {
 
    function enviarCadastro(dados: Record<string, FormDataEntryValue>) {
 
-      console.log("sucesso");
+      const perfilSelecionado = String(dados.perfil) as TipoUsuario;
 
       const dadosUsuario: CriarUsuarioRequest = {
-        nome: String(dados.name),
+        nome: String(dados.nome),
         cpf: String(dados.cpf),
-         email: String(dados.email),
+        email: String(dados.email),
         senha: String(dados.senha),
         telefone: String(dados.telefone),
         dataNascimento: String(dados.dataNascimento),
+        tipo: [perfilSelecionado],
       }
 
       adminService.cadastrarUsuario(dadosUsuario);
@@ -108,9 +112,14 @@ export default function CadastroUsuarios() {
                { campoInvalido.data && <span style={{ color: "red" }}>Data inválida.</span>}
             </div>
             <div className="cadastro-usuarios-campo-basico">
+               <label>Telefone:</label>
+               <input name="telefone" type="text"/>
+               { campoInvalido.telefone && <span style={{ color: "red" }}>Telefone inválido.</span>}
+            </div>
+            <div className="cadastro-usuarios-campo-basico">
                <label>Senha:</label>
                <input name="senha" type="password" required />
-               { campoInvalido.senha && <span style={{ color: "red" }}>Senhas diferentes.</span>}
+               { campoInvalido.senha && <span style={{ color: "red" }}>Senha inválida.</span>}
             </div>
             <div className="cadastro-usuarios-campo-basico">
                <label>Repetir senha:</label>
@@ -119,20 +128,20 @@ export default function CadastroUsuarios() {
 
             <div className="container-atribuir-perfil" style={{ display:"flex", flexDirection:"row", gap:"15px" }}>
                <div className="campo-atribuir-perfil">
-                  <input type="radio" name="perfil" id="paciente" value={1} onChange={() => {showCampoExtra({ crm:false, crn:false,})}} required/>
+                  <input type="radio" name="perfil" id="paciente" value={"PACIENTE"} onChange={() => {showCampoExtra({ crm:false, crn:false,})}} required/>
                   <label htmlFor="paciente">paciente</label>
                </div>
                <div className="campo-atribuir-perfil">
-                  <input type="radio" name="perfil" id="cuidador" value={2} onChange={() => {showCampoExtra({ crm:false, crn:false,})}} />
-                  <label htmlFor="cuidador">cuidador</label>
+                  <input type="radio" name="perfil" id="responsavel" value={"RESPONSAVEL"} onChange={() => {showCampoExtra({ crm:false, crn:false,})}} required/>
+                  <label htmlFor="responsavel">responsavel</label>
                </div>
                <div className="campo-atribuir-perfil">
-                  <input type="radio" name="perfil" id="medico" value={3} onChange={() => {showCampoExtra({ crm:true, crn:false,})}} />
+                  <input type="radio" name="perfil" id="medico" value={"MEDICO"} onChange={() => {showCampoExtra({ crm:true, crn:false,})}} required/>
                   <label htmlFor="medico">médico</label>
                </div>
                <div className="campo-atribuir-perfil">
-                  <input type="radio" name="perfil" id="nutricionista" value={4} onChange={() => {showCampoExtra({ crm:false, crn:true,})}} />
-                  <label htmlFor="nutricionista">nutricionista</label>
+                  <input type="radio" name="perfil" id="profissional" value={"PROFISSIONAL"} onChange={() => {showCampoExtra({ crm:false, crn:true,})}} required/>
+                  <label htmlFor="profissional">profissional</label>
                </div>
             </div>
 

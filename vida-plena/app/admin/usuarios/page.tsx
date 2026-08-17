@@ -1,54 +1,57 @@
 "use client";
 
+
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { formatarCPF, limparCPF } from "@/app/lib/Formatters";
 import Button from "@/app/components/Button";
 import { adminService } from "@/app/services/adminService";
-import { requisitarUsuario } from "@/app/types/admin";
+import { Usuario } from "@/app/types/admin";
 
 export default function Usuarios() {
+   const router = useRouter();
    const [busca, setBusca] = useState("");
-   const [usuarioEncontrado, setUsuarioEncontrado] = useState(false);
-   const [usuario, setUsuario] = useState<requisitarUsuario | null>(null);
+   const [usuario, setUsuario] = useState<Usuario | null>(null);
    const [resultados, setResultados] = useState<string[]>([]);
 
-   const CpfsParaTeste = [
-      "12345678910",
-      "11111111111",
-      "12354312355",
-      "34565487623",
-      "98077857355",
-      "44566674580",
-      "78932455512",
-      "65423312344",
-   ];
-
-   function pesquisarUsuarios(cpf: string) {
-
-      const cpfLimpo = limparCPF(cpf);
-
+   async function pesquisarUsuarios(cpfDigitado: string) {
+      const cpfLimpo = limparCPF(cpfDigitado);
       setBusca(cpfLimpo);
 
-      const CpfsBuscados = CpfsParaTeste.filter((cpf) =>
-         cpf.startsWith(cpfLimpo)
-      );
-      setResultados(CpfsBuscados);
+      if (!cpfLimpo) {
+         setResultados([]);
+         return;
+      }
+
+      try {
+         const respostaPaginada = await adminService.listarUsuarios(0, 50);
+
+         const cpfsFiltrados = respostaPaginada.content
+            .map((usuario) => usuario.cpf)
+            .filter((cpf) => cpf.startsWith(cpfLimpo));
+
+         setResultados(cpfsFiltrados);
+      } catch (error) {
+         console.error("Erro ao pesquisar CPFs na API:", error);
+         setResultados([]);
+      }
    }
 
-   function buscarUsuario(cpf: string) {
-
+   async function buscarUsuario(cpf: string) {
       setBusca(cpf);
       setResultados([]);
 
-      //TODO
-      // setUsuario() Envia para o backend aqui e recebe os dados do usuário. Chamar pelo ID?
-      //let usuarioTeste: requisitarUsuario | null = null;
+      try {
+         const usuarioTeste = await adminService.buscarConta(cpf);
 
-
-      //setUsuario(adminService.buscarConta(cpf));
-      //setUsuarioEncontrado(true);
+         if (usuarioTeste) {
+            setUsuario(usuarioTeste);
+         }
+      } catch (error) {
+         console.error("Erro ao buscar usuário:", error);
+      }
    }
 
    return (
@@ -57,6 +60,11 @@ export default function Usuarios() {
             border: "1px solid black", padding: "10px", borderRadius: "10px", display: "flex", flexDirection: "column", gap: "20px",
             backgroundColor:"white", color:"black"
          }}>
+         <Button
+            type="button"
+            onClick={() => router.back()}
+         >
+            Cancelar</Button>
          <Button>
             <Link href={"/admin/usuarios/novo"}>
                Cadastrar novo usuario
@@ -72,19 +80,21 @@ export default function Usuarios() {
                maxLength={14}
                style={{ border:"1px solid black", borderRadius:"4px", marginLeft:"4px" }}
             />
-            {busca.length > 0 && (
-               <div className="lista-resultados">
+            {busca.length > 0 && resultados.length > 0 && (
+               <ul style={{ listStyleType: "none", padding: 0 }}>
                   {resultados.map((busca) => (
-                     <Button onClick={() => buscarUsuario(busca)} key={busca}>
-                        {formatarCPF(busca)}
-                     </Button>
+                     <li key={busca} style={{ marginBottom: "8px" }}>
+                        <Button onClick={() => buscarUsuario(busca)}>
+                           {formatarCPF(busca)}
+                        </Button>
+                     </li>
                   ))}
-               </div>
+               </ul>
             )}
          </div>
 
 
-         { usuarioEncontrado &&
+         { usuario &&
             <div
                className="container-card-usuario"
                style={{
@@ -127,18 +137,19 @@ export default function Usuarios() {
                            <label>CPF: {usuario?.cpf}</label>
                         </div>
                         <div className="campo-container">
-                           <label>Data de Nascimento: </label>
+                           <label>Data de Nascimento:{ usuario?.dataNascimento } </label>
                         </div>
                      </div>
                      <div className="Secondary user-info">
                         <div className="campo-container">
-                           <label>Perfil: </label>
+                           <label>Perfil: { usuario?.tipos }</label>
                         </div>
-                        {usuario?.tipos.includes("MEDICO") &&
+
+                        {/*usuario?.tipo.includes("MEDICO") &&
                            <div className="campo-container">
                               <label>CRM: usuario?.crm</label>
                            </div>
-                        }
+                        */}
 
                         {/* IMPORTANTE: não existe usuario nutricionista
                            usuario?.tipos.includes("NUTRICIONISTA") &&
@@ -148,7 +159,7 @@ export default function Usuarios() {
                         */}
 
                         <div className="campo-container">
-                           <label>Senha: </label>
+                           <label>Id: { usuario?.id }</label>
                         </div>
 
                         <div className="campo-container">
@@ -161,13 +172,26 @@ export default function Usuarios() {
                   </div>
                   <div className="Admin-buttons" style={{ display:"flex", flexDirection:"row", gap:"20px" }}>
                      {usuario?.status === "ATIVO" &&
-                        <Button onClick={() => adminService.desativarConta(usuario.cpf)}>Desativar</Button>
+                        <Button onClick={async () => {
+                           await adminService.desativarConta(usuario.id);
+                           await buscarUsuario(usuario.cpf);
+                        }}>Desativar</Button>
                      }
                      {usuario?.status === "INATIVO" &&
-                        <Button onClick={() => adminService.ativarConta(usuario.cpf)}>Ativar</Button>
+                        <Button onClick={async () => {
+                           await adminService.ativarConta(usuario.id);
+                           await buscarUsuario(usuario.cpf);
+                        }}>Ativar</Button>
                      }
-                     <Button variant="danger" onClick={() => adminService.bloquearConta(usuario.cpf)}>Bloquear</Button>
-                     <Button variant="danger" onClick={() => adminService.excluirConta(usuario.cpf)}>Excluir</Button>
+                     <Button variant="danger" onClick={async () => {
+                        await adminService.bloquearConta(usuario.id);
+                        await buscarUsuario(usuario.cpf)
+                     }}>Bloquear</Button>
+                     <Button variant="danger" onClick={async () => {
+                        await adminService.excluirConta(usuario.id);
+                        // TODO: Confirmação após apertar botão.
+                        setUsuario(null);
+                     }}>Excluir</Button>
                   </div>
                </div>
             </div>}
