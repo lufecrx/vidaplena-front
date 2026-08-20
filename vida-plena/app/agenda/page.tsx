@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Button from '../components/Button'
 
 type Horario = {
   inicio: string
@@ -85,7 +86,7 @@ export default function AgendaPage() {
     console.log('Payload pronto para envio:', payload)
     
     setTimeout(() => {
-      alert('Agenda salva com sucesso! Abra o console (F12) para ver os dados.')
+      alert('Agenda salva com sucesso!')
       setLoading(false)
     }, 1000)
   }
@@ -93,25 +94,23 @@ export default function AgendaPage() {
   return (
     <div className="max-w-4xl mx-auto p-6 mt-10">
       {}
-      <div className="bg-gradient-to-r from-blue-900 to-teal-500 rounded-t-2xl p-6 text-white shadow-lg">
+      <div className="bg-brand-wellness rounded-t-2xl p-6 text-white shadow-lg">
         <h2 className="text-2xl font-bold">Minha Agenda</h2>
-        <p className="text-blue-100 mt-1">Configure seus dias e horários de atendimento clínico.</p>
+        <p className="mt-1 opacity-90">Configure seus dias e horários de atendimento clínico.</p>
       </div>
 
       <div className="bg-white rounded-b-2xl shadow-lg border border-t-0 border-gray-100 p-6 md:p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
-          
           <div className="space-y-4">
             {DIAS_SEMANA.map((dia) => (
               <div 
                 key={dia.id} 
                 className={`border rounded-xl p-5 transition-all duration-200 ${
-                  agenda[dia.id].ativo ? 'border-teal-500 bg-slate-50' : 'border-gray-200 hover:border-blue-300'
+                  agenda[dia.id].ativo ? 'border-vp-bem-estar bg-slate-50' : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {}
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input 
                         type="checkbox" 
@@ -119,9 +118,11 @@ export default function AgendaPage() {
                         checked={agenda[dia.id].ativo}
                         onChange={() => toggleDia(dia.id)}
                       />
-                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500"></div>
+                      {}
+                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-vp-bem-estar"></div>
                     </label>
-                    <span className={`text-lg font-semibold ${agenda[dia.id].ativo ? 'text-blue-900' : 'text-gray-600'}`}>
+                    {}
+                    <span className={`text-lg font-semibold ${agenda[dia.id].ativo ? 'text-vp-azul-900' : 'text-gray-500'}`}>
                       {dia.label}
                     </span>
                   </div>
@@ -133,11 +134,12 @@ export default function AgendaPage() {
                       <div key={index} className="flex flex-wrap items-end gap-4">
                         <div className="flex flex-col">
                           <label className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Início</label>
+                          {}
                           <input
                             type="time"
                             value={horario.inicio}
                             onChange={(e) => updateHorario(dia.id, index, 'inicio', e.target.value)}
-                            className="border border-gray-300 text-gray-700 p-2.5 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all bg-white"
+                            className="border border-gray-300 text-gray-700 p-2.5 rounded-lg focus:ring-2 focus:ring-vp-bem-estar outline-none transition-all bg-white"
                             required
                           />
                         </div>
@@ -147,7 +149,7 @@ export default function AgendaPage() {
                             type="time"
                             value={horario.fim}
                             onChange={(e) => updateHorario(dia.id, index, 'fim', e.target.value)}
-                            className="border border-gray-300 text-gray-700 p-2.5 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all bg-white"
+                            className="border border-gray-300 text-gray-700 p-2.5 rounded-lg focus:ring-2 focus:ring-vp-bem-estar outline-none transition-all bg-white"
                             required
                           />
                         </div>
@@ -156,7 +158,7 @@ export default function AgendaPage() {
                           <button
                             type="button"
                             onClick={() => removerHorario(dia.id, index)}
-                            className="p-2.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors font-medium cursor-pointer"
+                            className="p-2.5 text-vp-coral-500 hover:bg-red-50 rounded-lg transition-colors font-medium cursor-pointer"
                             title="Remover horário"
                           >
                             Remover
@@ -168,7 +170,7 @@ export default function AgendaPage() {
                     <button
                       type="button"
                       onClick={() => addHorario(dia.id)}
-                      className="text-sm text-teal-600 hover:text-teal-800 font-semibold mt-2 flex items-center gap-1 cursor-pointer"
+                      className="text-sm text-vp-teal-700 hover:text-vp-azul-900 font-semibold mt-2 flex items-center gap-1 cursor-pointer"
                     >
                       + Adicionar turno (ex: tarde)
                     </button>
@@ -179,13 +181,10 @@ export default function AgendaPage() {
           </div>
 
           <div className="flex justify-end pt-6 mt-6 border-t border-gray-100">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue-900 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-800 transition-colors shadow-md disabled:opacity-70 flex items-center gap-2 cursor-pointer"
-            >
+            {}
+            <Button type="submit" disabled={loading}>
               {loading ? 'Salvando...' : 'Salvar Agenda'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
