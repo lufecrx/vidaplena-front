@@ -127,7 +127,7 @@ export default function CadastroUsuarios() {
             </div>
             <div className="cadastro-usuarios-campo-basico">
                <label>Telefone:</label>
-               <input name="telefone" type="text"/>
+               <input name="telefone" type="text" placeholder="(99) 00000-0000"/>
                { campoInvalido.telefone && <span style={{ color: "red" }}>Telefone inválido.</span>}
             </div>
             <div className="cadastro-usuarios-campo-basico">
