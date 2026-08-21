@@ -88,7 +88,7 @@ function AuthSidePanel() {
     return (
         <>
             <div
-                className="hidden md:flex relative overflow-hidden w-full md:max-w-5/12 h-24 md:h-3/4 rounded-t-lg md:rounded-t-none md:rounded-r-lg shadow-lg flex-col justify-between p-10 bg-brand-primary"
+                className="hidden md:flex relative overflow-hidden w-full md:max-w-5/12 h-24 md:h-3/4 rounded-t-lg md:rounded-t-none md:rounded-r-lg md:shadow-lg flex-col justify-between p-10 bg-brand-primary "
                 aria-hidden="true"
             >
                 <span className="vp-mono text-[11px] uppercase tracking-[0.18em] text-white">
@@ -111,7 +111,7 @@ function AuthSidePanel() {
             </div>
 
             <div
-                className="md:hidden relative overflow-hidden w-full h-24 rounded-t-lg flex items-center justify-center shadow-lg"
+                className="md:hidden relative overflow-hidden w-full h-24 rounded-t-lg flex items-center justify-center shadow-lg bg-brand-primary"
                 aria-hidden="true"
             >
                 <PulseTrace id="vp-mobile" className="w-4/5 h-10" />
@@ -122,13 +122,16 @@ function AuthSidePanel() {
 
 export function AuthPageLayout({ children }: { children: ReactNode }) {
     return (
-        <div className="flex flex-col-reverse md:flex-row items-center justify-center min-h-screen min-w-full p-4 md:p-0 gap-0 bg-[#F3F6F1]">
-            <div className="flex flex-col items-center justify-center w-full md:max-w-5/12 h-auto md:h-3/4 p-6 bg-white rounded-b-lg md:rounded-b-none md:rounded-l-lg md:rounded-bl-lg shadow-lg">
+        <div className="flex flex-col-reverse md:flex-row items-center justify-center h-screen w-full p-4 md:p-0 bg-[#F3F6F1]">
+
+            <div className="flex flex-col items-center justify-center w-full md:max-w-5/12 h-auto md:h-3/4 p-6 bg-white rounded-b-lg md:rounded-b-none md:rounded-l-lg shadow-lg">
                 <div className="flex flex-col items-center justify-center w-full sm:w-5/6 md:w-2/3 h-full">
                     {children}
                 </div>
             </div>
+
             <AuthSidePanel />
+
         </div>
     );
 }
