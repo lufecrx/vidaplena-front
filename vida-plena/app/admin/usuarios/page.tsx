@@ -142,7 +142,7 @@ export default function Usuarios() {
                      </div>
                      <div className="Secondary user-info">
                         <div className="campo-container">
-                           <label>Perfil: { usuario?.tipos }</label>
+                           <label>Perfil: {Array.isArray(usuario?.tipos) ? usuario?.tipos.join(", ") : usuario?.tipos}</label>
                         </div>
 
                         {/*usuario?.tipo.includes("MEDICO") &&
