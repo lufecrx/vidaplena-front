@@ -5,6 +5,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '../auth/Authcontext'
 */
+import { usePathname } from 'next/navigation'
+import { useAuth } from '../auth/Authcontext'
+import { getCurrentNavLabel } from '../lib/Navegation'
 
 interface HeaderProps {
   sidebarCollapsed: boolean
@@ -13,6 +16,14 @@ interface HeaderProps {
 export function Header({ sidebarCollapsed }: HeaderProps) {
   //const { usuario, logout } = useAuth()
   //const [userMenuOpen, setUserMenuOpen] = useState(false)
+   const { usuario } = useAuth()
+   const pathname = usePathname()
+   const label = getCurrentNavLabel(
+      pathname,
+      usuario?.tipos ?? []
+   )
+
+
 
   return (
     <header
@@ -24,7 +35,7 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
     >
       {/* Left — breadcrumb ou título da página pode entrar aqui via slot */}
       <div className="flex items-center gap-2 text-sm text-gray-500">
-        <span className="font-medium text-gray-800">VidaPlena</span>
+        <span className="font-medium text-gray-800">{label}</span>
       </div>
 
 
