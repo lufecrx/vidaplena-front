@@ -4,14 +4,14 @@ import React, { useState } from "react";
 import { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Button from "../components/Button";
+import Button from "@/app/components/Button";
 import {
     AuthFormError,
     AuthPageHeader,
     AuthPageLayout,
     authInputClass,
-} from "../components/auth/AuthPageLayout";
-import { useAuth } from "../auth/Authcontext";
+} from "@/app/components/auth/AuthPageLayout";
+import { useAuth } from "@/app/auth/Authcontext";
 
 type FieldErrors = {
     email?: string;

@@ -1,20 +1,20 @@
 'use client'
 
-import { useRouteGuard } from '../hooks/Userouteguard'
+import { useRouteGuard } from '@/app/hooks/Userouteguard'
 
 export default function AdminLayout({
    children,
 }: {
    children: React.ReactNode
    }) {
-   const { isLoading } = useRouteGuard('ADMINISTRADOR')
+   const { isLoading } = useRouteGuard('PROFISSIONAL', 'ADMINISTRADOR')
 
    if (isLoading) {
       return <div>Carregando... </div>
    }
 
    return (
-      <main className="AdminLayout">
+      <main className="ProfissionalLayout">
          {children}
       </main>
    )

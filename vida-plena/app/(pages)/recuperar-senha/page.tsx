@@ -3,14 +3,14 @@
 import React, { useState } from "react";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import Button from "../components/Button";
+import Button from "@/app/components/Button";
 import {
     AuthFormError,
     AuthPageHeader,
     AuthPageLayout,
     authInputClass,
-} from "../components/auth/AuthPageLayout";
-import { authService } from "../services/authService";
+} from "@/app/components/auth/AuthPageLayout";
+import { authService } from "@/app/services/authService";
 
 function getForgotPasswordErrorMessage(error: unknown): string {
     if (error instanceof AxiosError) {
