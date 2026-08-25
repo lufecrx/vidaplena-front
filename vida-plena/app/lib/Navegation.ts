@@ -194,7 +194,7 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Início',
       items: [
-        { label: 'Meu Painel', href: '/paciente/dashboard', icon: 'LayoutDashboard' },
+        { label: 'Dashboard', href: '/paciente/dashboard', icon: 'LayoutDashboard' },
       ],
     },
     {
@@ -266,4 +266,32 @@ export function getNavForUser(tipos: TipoUsuario[]): NavGroup[] {
   }
 
   return []
+}
+
+
+export function getCurrentNavLabel(
+  pathname: string,
+  tipos: TipoUsuario[] | null
+): string | null {
+  const nav = getNavForUser(tipos ?? [])
+
+  for (const group of nav) {
+    for (const item of group.items) {
+      if (item.href === pathname) {
+        return item.label
+      }
+
+      if (item.children) {
+        const child = item.children.find(
+          (child) => child.href === pathname
+        )
+
+        if (child) {
+          return child.label
+        }
+      }
+    }
+  }
+
+  return null
 }
