@@ -4,7 +4,8 @@ import { CriarProntuarioRequest } from '../types/prontuario';
 
 export const prontuarioService = {
 
-   async obterProntuario(id:string) {
+   // Alterar para um tipo Prontuario mais completo depois
+   async obterProntuario(id:string): Promise<CriarProntuarioRequest> {
       const response = await api.get(`api/prontuario/${id}`);
 
       return response.data;
