@@ -219,7 +219,13 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
         { label: 'Chat', href: '/chat', icon: 'MessageCircle' },
         { label: 'Notificações', href: '/notificacoes', icon: 'Bell' },
       ],
-    },
+     },
+     {
+       group: 'Configurações',
+       items: [
+         { label: 'Sair', href: '/logout', icon: 'Exit' },
+       ],
+     },
   ],
 
   RESPONSAVEL: [

@@ -1,16 +1,18 @@
 'use client'
 
+/*
 import { useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '../auth/Authcontext'
+*/
 
 interface HeaderProps {
   sidebarCollapsed: boolean
 }
 
 export function Header({ sidebarCollapsed }: HeaderProps) {
-  const { usuario, logout } = useAuth()
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  //const { usuario, logout } = useAuth()
+  //const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   return (
     <header
@@ -25,20 +27,21 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
         <span className="font-medium text-gray-800">VidaPlena</span>
       </div>
 
-      {/* Right */}
+
+      {/* Campo com nome de usuario e dropbox para sair da conta e acessar perfil.
       <div className="flex items-center gap-3">
-        {/* Notificações */}
+
         <Link
           href="/notificacoes"
           className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
           aria-label="Notificações"
         >
           🔔
-          {/* Badge de não lidas — conectar ao estado real depois */}
+
           <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
         </Link>
 
-        {/* User menu */}
+
         <div className="relative">
           <button
             onClick={() => setUserMenuOpen((v) => !v)}
@@ -56,7 +59,7 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
 
           {userMenuOpen && (
             <>
-              {/* Overlay para fechar ao clicar fora */}
+
               <div
                 className="fixed inset-0 z-10"
                 onClick={() => setUserMenuOpen(false)}
@@ -87,7 +90,9 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
             </>
           )}
         </div>
-      </div>
+
+      </div> */}
+
     </header>
   )
 }

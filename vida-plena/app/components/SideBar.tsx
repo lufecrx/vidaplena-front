@@ -7,10 +7,10 @@ import { getNavForUser } from '../lib/Navegation'
 
 interface SidebarProps {
   collapsed: boolean
-  onToggle: () => void
+  //onToggle: () => void
 }
 
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar({ collapsed/*, onToggle*/ }: SidebarProps) {
   const { usuario } = useAuth()
   const pathname = usePathname()
 
@@ -29,14 +29,15 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           <span className="text-white font-bold text-lg tracking-tight">
             Vida<span className="text-[#4DBFA8]">Plena</span>
           </span>
-        )}
+           )}
+         {/*  Seta para reduzir a sidebar
         <button
           onClick={onToggle}
           className="ml-auto p-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors"
           aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
         >
           {collapsed ? '→' : '←'}
-        </button>
+          </button>*/}
       </div>
 
       {/* Navigation */}
@@ -121,7 +122,8 @@ function IconPlaceholder({ name }: { name: string }) {
     Handshake: '🤝', PackageCheck: '📦', HeartPulse: '💗', Megaphone: '📣',
     Settings: '⚙️', Home: '🏠', Truck: '🚚', BarChart3: '📊', TrendingUp: '📈',
     FileText: '📄', RefreshCw: '🔄', Sliders: '🎛', Search: '🔍', Clock: '🕐',
-    Activity: '📉', MessageCircle: '💬', Bell: '🔔', Pill: '💊', Package: '📦',
+     Activity: '📉', MessageCircle: '💬', Bell: '🔔', Pill: '💊', Package: '📦',
+    Exit: '🚪',
   }
   return <>{map[name] ?? '•'}</>
 }
