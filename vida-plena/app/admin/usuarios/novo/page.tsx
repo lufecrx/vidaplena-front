@@ -24,6 +24,9 @@ export default function CadastroUsuarios() {
       crn: false,
    });
 
+   const [erroCadastro, setErroCadastro] = useState<string | null>(null);
+   const [isSubmitting, setIsSubmitting] = useState(false);
+
    function modificaCPF(cpf: string) {
 
       cpf = formatarCPF(cpf);
@@ -66,7 +69,7 @@ export default function CadastroUsuarios() {
       enviarCadastro(dados);
    }
 
-   function enviarCadastro(dados: Record<string, FormDataEntryValue>) {
+   async function enviarCadastro(dados: Record<string, FormDataEntryValue>) {
 
       const perfilSelecionado = String(dados.perfil) as TipoUsuario;
 
@@ -77,10 +80,21 @@ export default function CadastroUsuarios() {
         senha: String(dados.senha),
         telefone: String(dados.telefone),
         dataNascimento: String(dados.dataNascimento),
-        tipo: [perfilSelecionado],
+        tipos: [perfilSelecionado],
       }
 
-      adminService.cadastrarUsuario(dadosUsuario);
+      setIsSubmitting(true);
+      setErroCadastro(null);
+
+      try {
+         await adminService.cadastrarUsuario(dadosUsuario);
+         router.push("/admin/usuarios");
+      } catch (error) {
+         console.error("Erro ao cadastrar usuário:", error);
+         setErroCadastro("Erro ao cadastrar usuário. Verifique os dados e se o CPF ou e-mail já estão cadastrados.");
+      } finally {
+         setIsSubmitting(false);
+      }
    }
 
    return (
@@ -126,7 +140,7 @@ export default function CadastroUsuarios() {
                <input name="repetirSenha" type="password" required />
             </div>
 
-            <div className="container-atribuir-perfil" style={{ display:"flex", flexDirection:"row", gap:"15px" }}>
+            <div className="container-atribuir-perfil" style={{ display:"flex", flexDirection:"row", gap:"15px", flexWrap:"wrap" }}>
                <div className="campo-atribuir-perfil">
                   <input type="radio" name="perfil" id="paciente" value={"PACIENTE"} onChange={() => {showCampoExtra({ crm:false, crn:false,})}} required/>
                   <label htmlFor="paciente">paciente</label>
@@ -140,8 +154,12 @@ export default function CadastroUsuarios() {
                   <label htmlFor="medico">médico</label>
                </div>
                <div className="campo-atribuir-perfil">
-                  <input type="radio" name="perfil" id="profissional" value={"PROFISSIONAL"} onChange={() => {showCampoExtra({ crm:false, crn:true,})}} required/>
-                  <label htmlFor="profissional">profissional</label>
+                  <input type="radio" name="perfil" id="nutricionista" value={"NUTRICIONISTA"} onChange={() => {showCampoExtra({ crm:false, crn:true,})}} required/>
+                  <label htmlFor="nutricionista">nutricionista</label>
+               </div>
+               <div className="campo-atribuir-perfil">
+                  <input type="radio" name="perfil" id="administrador" value={"ADMINISTRADOR"} onChange={() => {showCampoExtra({ crm:false, crn:false,})}} required/>
+                  <label htmlFor="administrador">administrador</label>
                </div>
             </div>
 
@@ -160,6 +178,12 @@ export default function CadastroUsuarios() {
                </div>
             }
 
+            {erroCadastro && (
+               <div style={{ color: "red", textAlign: "center" }}>
+                  {erroCadastro}
+               </div>
+            )}
+
             <div
                className="container-botoes-formulario-atribuir-perfil"
                style={{ display:"flex", justifyContent:"center", gap:"30px" }}
@@ -167,12 +191,14 @@ export default function CadastroUsuarios() {
                <Button
                   type="button"
                   onClick={() => router.back()}
+                  disabled={isSubmitting}
                >
                   Cancelar</Button>
                <Button
                   type="submit"
+                  disabled={isSubmitting}
                >
-                  Cadastrar
+                  {isSubmitting ? "Cadastrando..." : "Cadastrar"}
                </Button>
             </div>
          </form>

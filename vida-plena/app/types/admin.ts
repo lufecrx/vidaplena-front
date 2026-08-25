@@ -3,6 +3,10 @@ export type TipoUsuario =
   | 'GESTOR'
   | 'FINANCEIRO'
   | 'MEDICO'
+  | 'NUTRICIONISTA'
+  | 'PERSONAL_TRAINER'
+  | 'FUNCIONARIO_ADMINISTRATIVO'
+  | 'CUIDADOR'
   | 'PROFISSIONAL'
   | 'RECEPCIONISTA'
   | 'PACIENTE'
@@ -17,7 +21,7 @@ export interface CriarUsuarioRequest {
    senha: string
    telefone: string
    dataNascimento: string
-   tipo: TipoUsuario[]
+   tipos: TipoUsuario[]
 }
 
 export interface Usuario {
