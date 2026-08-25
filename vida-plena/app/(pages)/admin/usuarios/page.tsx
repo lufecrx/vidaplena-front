@@ -7,8 +7,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatarCPF, limparCPF } from "@/app/lib/Formatters";
 import Button from "@/app/components/Button";
-import { adminService } from "@/app/services/adminService";
-import { Usuario } from "@/app/types/admin";
+import { usuarioService } from "@/app/services/usuarioService";
+import { Usuario } from "@/app/types/usuario";
 
 export default function Usuarios() {
    const router = useRouter();
@@ -26,7 +26,7 @@ export default function Usuarios() {
       }
 
       try {
-         const respostaPaginada = await adminService.listarUsuarios(0, 50);
+         const respostaPaginada = await usuarioService.listarUsuarios(0, 50);
 
          const cpfsFiltrados = respostaPaginada.content
             .map((usuario) => usuario.cpf)
@@ -44,7 +44,7 @@ export default function Usuarios() {
       setResultados([]);
 
       try {
-         const usuarioTeste = await adminService.buscarConta(cpf);
+         const usuarioTeste = await usuarioService.buscarConta(cpf);
 
          if (usuarioTeste) {
             setUsuario(usuarioTeste);
@@ -173,22 +173,22 @@ export default function Usuarios() {
                   <div className="Admin-buttons" style={{ display:"flex", flexDirection:"row", gap:"20px" }}>
                      {usuario?.status === "ATIVO" &&
                         <Button onClick={async () => {
-                           await adminService.desativarConta(usuario.id);
+                           await usuarioService.desativarConta(usuario.id);
                            await buscarUsuario(usuario.cpf);
                         }}>Desativar</Button>
                      }
                      {usuario?.status === "INATIVO" &&
                         <Button onClick={async () => {
-                           await adminService.ativarConta(usuario.id);
+                           await usuarioService.ativarConta(usuario.id);
                            await buscarUsuario(usuario.cpf);
                         }}>Ativar</Button>
                      }
                      <Button variant="danger" onClick={async () => {
-                        await adminService.bloquearConta(usuario.id);
+                        await usuarioService.bloquearConta(usuario.id);
                         await buscarUsuario(usuario.cpf)
                      }}>Bloquear</Button>
                      <Button variant="danger" onClick={async () => {
-                        await adminService.excluirConta(usuario.id);
+                        await usuarioService.excluirConta(usuario.id);
                         // TODO: Confirmação após apertar botão.
                         setUsuario(null);
                      }}>Excluir</Button>

@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatarCPF, limparCPF } from "@/app/lib/Formatters";
 import { cpfValido, emailValido, dataValida, crmValido, crnValido, senhaValida } from "@/app/lib/Validation";
-import { CriarUsuarioRequest, TipoUsuario } from "@/app/types/admin";
-import { adminService } from "@/app/services/adminService";
+import { CriarUsuarioRequest, TipoUsuario } from "@/app/types/usuario";
+import { usuarioService } from "@/app/services/usuarioService";
 import Button from "@/app/components/Button";
 
 export default function CadastroUsuarios() {
@@ -87,7 +87,7 @@ export default function CadastroUsuarios() {
       setErroCadastro(null);
 
       try {
-         await adminService.cadastrarUsuario(dadosUsuario);
+         await usuarioService.cadastrarUsuario(dadosUsuario);
          router.push("/admin/usuarios");
       } catch (error) {
          console.error("Erro ao cadastrar usuário:", error);

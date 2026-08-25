@@ -1,7 +1,13 @@
 import { api } from '../../api'
-import type { CriarUsuarioRequest, Usuario, PaginaUsuariosResponse } from '../types/admin'
+import type { CriarUsuarioRequest, Usuario, PaginaUsuariosResponse } from '../types/usuario'
 
-export const adminService = {
+export const usuarioService = {
+
+   async getMeuPerfil(): Promise<Usuario> {
+      const response = await api.get(`api/v1/usuarios/me`);
+
+      return response.data;
+   },
 
    async buscarConta(cpf: string): Promise<Usuario> {
       const response = await api.get(`/api/v1/usuarios/cpf/${cpf}`);
