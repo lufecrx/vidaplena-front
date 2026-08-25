@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react'
-import { useProfissionais } from '../hooks/useProfissionais'
-import BuscaProfissionais from '../components/BuscaProfissionais'
-import TabelaProfissionais from '../components/TabelaProfissionais'
-import type { FiltrosProfissional } from '../services/profissionalService'
+import { useProfissionais } from '@/app/hooks/useProfissionais'
+import BuscaProfissionais from '@/app/components/BuscaProfissionais'
+import TabelaProfissionais from '@/app/components/TabelaProfissionais'
+import type { FiltrosProfissional } from '@/app/services/profissionalService'
 
 export default function PaginaProfissionais() {
   const { profissionais, carregando, erro, buscar } = useProfissionais()
@@ -11,8 +11,8 @@ export default function PaginaProfissionais() {
 const [jaBuscou, setJaBuscou] = useState(false)
 
 const handleBuscar = (filtros: FiltrosProfissional) => {
-    setJaBuscou(true) 
-    buscar(filtros)   
+    setJaBuscou(true)
+    buscar(filtros)
   }
 
   return (
