@@ -2,7 +2,7 @@
 @import "./pallete.css";
 
 :root {
-  --background: var(--background-image-brand-wellness);
+  --background: #ffffff;
   --foreground: #171717;
 }
 
@@ -22,7 +22,7 @@
   .table-cell-base {
     @apply py-2 px-4 border-b text-gray-700;
   }
-  
+
   .table-header-base {
     @apply py-2 px-4 border-b bg-gray-100 font-semibold text-gray-800 text-left;
   }
