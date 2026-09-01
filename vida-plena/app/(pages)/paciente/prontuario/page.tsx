@@ -15,7 +15,7 @@ export default function PacienteDashboard() {
       async function carregarDados() {
          try {
             const usuario = await usuarioService.getMeuPerfil();
-            const prontuario = await prontuarioService.obterPorPaciente(usuario.id);
+            const prontuario = await prontuarioService.obterProntuarioV1(usuario.id);
 
             setUser(usuario);
             setProntuario(prontuario);

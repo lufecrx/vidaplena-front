@@ -202,7 +202,7 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
       items: [
         { label: 'Agendamentos', href: '/paciente/agendamentos', icon: 'CalendarDays' },
         { label: 'Prontuário', href: '/paciente/prontuario', icon: 'FileText' },
-        { label: 'Minhas Métricas', href: '/paciente/metricas', icon: 'Activity' },
+        { label: 'Métricas', href: '/paciente/metricas', icon: 'Activity' },
         { label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
         { label: 'Meu Plano', href: '/paciente/plano', icon: 'PackageCheck' },
       ],

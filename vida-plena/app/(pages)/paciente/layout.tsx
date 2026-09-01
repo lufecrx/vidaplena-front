@@ -16,9 +16,9 @@ export default function AdminLayout({
    }
 
    return (
-      <main className="PacienteLayout">
-         <Sidebar collapsed={false}/>
-         <Header sidebarCollapsed={false}/>
+      <main className="flex flex-col-reverse md:flex-row items-center justify-center h-screen w-full p-4 md:p-0 bg-[#F3F6F1]">
+         <Sidebar/>
+         <Header/>
          {children}
       </main>
    )
