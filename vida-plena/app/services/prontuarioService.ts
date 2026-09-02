@@ -4,15 +4,26 @@ import { CriarProntuarioRequest } from '../types/prontuario';
 
 export const prontuarioService = {
 
-   // Alterar para um tipo Prontuario mais completo depois
-   async obterProntuario(id:string): Promise<CriarProntuarioRequest> {
+   async obterProntuario(id: string): Promise<CriarProntuarioRequest> {
       const response = await api.get(`api/prontuario/${id}`);
 
       return response.data;
    },
 
-   async obterPorPaciente(pacienteId:string) {
+   async obterProntuarioV1(id: string): Promise<CriarProntuarioRequest> {
+      const response = await api.get(`api/v1/prontuario/${id}`);
+
+      return response.data;
+   },
+
+   async obterPorPaciente(pacienteId: string) {
       const response = await api.get(`api/prontuarios/paciente/${pacienteId}`);
+
+      return response.data;
+   },
+
+   async obterPorPacienteV1(pacienteId: string) {
+      const response = await api.get(`api/v1/prontuarios/paciente/${pacienteId}`);
 
       return response.data;
    },
