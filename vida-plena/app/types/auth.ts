@@ -28,11 +28,14 @@ export interface LoginRequest {
 }
 
 export interface AuthResponse {
-  token: string
-  refreshToken: string
-  expiresIn: number
-  tipoUsuario: TipoUsuario
-  usuarioId: string
+  accessToken?: string
+  token?: string
+  tokenType?: string
+  usuario?: UsuarioResponse
+  refreshToken?: string
+  expiresIn?: number
+  tipoUsuario?: TipoUsuario
+  usuarioId?: string
 }
 
 export interface AuthState {

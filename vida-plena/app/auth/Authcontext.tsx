@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { authService } from '../services/authService'
+import { getAccessToken, setAccessToken } from '../../api'
 import type { UsuarioResponse, TipoUsuario, LoginRequest } from '../types/auth'
 
 interface AuthContextData {
@@ -21,14 +22,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
-  // Ao montar, tenta recuperar sessão via refresh token (cookie httpOnly)
+  // Ao montar, tenta recuperar sessão caso haja indicador de sessão salva
   useEffect(() => {
     async function hydrateSession() {
+      const token = getAccessToken()
+      if (!token) {
+        setUsuario(null)
+        setIsLoading(false)
+        return
+      }
+
       try {
         const perfil = await authService.getMeuPerfil()
         setUsuario(perfil)
       } catch {
         setUsuario(null)
+        setAccessToken(null)
       } finally {
         setIsLoading(false)
       }
@@ -37,8 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = useCallback(async (credentials: LoginRequest) => {
-    await authService.login(credentials)
-    const perfil = await authService.getMeuPerfil()
+    const authData = await authService.login(credentials)
+    const perfil = authData.usuario || (await authService.getMeuPerfil())
     setUsuario(perfil)
     // Redireciona conforme o tipo principal do usuário
     router.replace(getHomeByRole(perfil.tipos))
