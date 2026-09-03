@@ -1,9 +1,43 @@
 import { TrendingUp, TrendingDown } from 'lucide-react'
 import { IconPlaceholder } from './Icons'
 
+
 /*
-*   Card pequeno com dados de resumo.
+*   ------------------------------  Card pequeno com texto ------------------------------
 */
+
+interface TextCardProps {
+   title?: string
+   text: string
+}
+
+export function TextCard({
+   title,
+   text,
+}: TextCardProps) {
+
+   return (
+     <div className="flex flex-col justify-between rounded-2xl bg-white p-6 shadow-sm border border-slate-100/80 transition-all hover:shadow-md gap-2.5">
+      {/* Topo: Título e Ícone */}
+      <div className="mt-2 flex flex-col gap-1">
+         <span className="text-3xl font-bold tracking-tight text-slate-900">
+            {title}
+         </span>
+      </div>
+
+       {/* Conteúdo Principal: Texto */}
+       <div className="flex items-start justify-between gap-4">
+         <span className="text-sm font-semibold text-slate-500">{text}</span>
+      </div>
+   </div>
+)}
+
+
+
+/*
+*   ------------------------------  Card pequeno com dados de resumo ------------------------------
+*/
+
 interface StatCardProps {
   title: string
   value: string | number // O valor em Destaque é esse
@@ -61,8 +95,9 @@ export function StatCard({
 }
 
 
+
 /*
-*   Card grande com páginação
+*   ------------------------------  Card grande com páginação ------------------------------
 */
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
