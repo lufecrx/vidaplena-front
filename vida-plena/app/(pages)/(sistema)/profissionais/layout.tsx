@@ -2,7 +2,7 @@
 
 import { useRouteGuard } from '@/app/hooks/Userouteguard'
 
-export default function AdminLayout({
+export default function ProfissionalLayout({
    children,
 }: {
    children: React.ReactNode
@@ -14,8 +14,8 @@ export default function AdminLayout({
    }
 
    return (
-      <main className="ProfissionalLayout">
+      <div>
          {children}
-      </main>
+      </div>
    )
 }
