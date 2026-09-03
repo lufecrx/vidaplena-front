@@ -8,7 +8,7 @@ import { IconPlaceholder } from './Icons'
 
 interface TextCardProps {
    title?: string
-   text: string
+   text: string | React.ReactElement
 }
 
 export function TextCard({
@@ -102,6 +102,7 @@ export function StatCard({
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { PaginaUsuariosResponse } from '../types/usuario'
+import { Component } from 'react'
 
 interface RecentUsersCardProps {
   data: PaginaUsuariosResponse | null
