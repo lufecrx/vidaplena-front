@@ -76,7 +76,7 @@ export function dataValida(data: string): boolean {
    return nascimento >= dataMinima && nascimento <= dataMaxima;
 }
 
-// TO DO: Validar CRM
+// TODO: Validar CRM
 export function crmValido(crm: string): boolean {
 
    if (crm == "123") {
@@ -86,7 +86,7 @@ export function crmValido(crm: string): boolean {
    return true;
 }
 
-// TO DO: Validar CRN
+// TODO: Validar CRN
 export function crnValido(crn: string): boolean {
 
    if (crn == "123") {
