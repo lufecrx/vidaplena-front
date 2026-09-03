@@ -26,10 +26,10 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
       group: 'Usuários',
       items: [
         { label: 'Usuários', href: '/admin/usuarios', icon: 'Users' },
-        { label: 'Permissões', href: '/admin/permissoes', icon: 'ShieldCheck' },
-        { label: 'Log de Auditoria', href: '/admin/auditoria', icon: 'ClipboardList' },
+        //{ label: 'Permissões', href: '/admin/permissoes', icon: 'ShieldCheck' },
+        //{ label: 'Log de Auditoria', href: '/admin/auditoria', icon: 'ClipboardList' },
       ],
-    },
+    }/* ,
     {
       group: 'Clínica',
       items: [
@@ -57,7 +57,7 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
       items: [
         { label: 'Configurações', href: '/admin/configuracoes', icon: 'Settings' },
       ],
-    },
+    },*/
   ],
 
   GESTOR: [
@@ -200,13 +200,13 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Saúde',
       items: [
-        { label: 'Agendamentos', href: '/paciente/agendamentos', icon: 'CalendarDays' },
+        //{ label: 'Agendamentos', href: '/paciente/agendamentos', icon: 'CalendarDays' },
         { label: 'Prontuário', href: '/paciente/prontuario', icon: 'FileText' },
         { label: 'Métricas', href: '/paciente/metricas', icon: 'Activity' },
-        { label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
-        { label: 'Meu Plano', href: '/paciente/plano', icon: 'PackageCheck' },
+        //{ label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
+        //{ label: 'Meu Plano', href: '/paciente/plano', icon: 'PackageCheck' },
       ],
-    },
+    },/*
     {
       group: 'Financeiro',
       items: [
@@ -219,7 +219,7 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
         { label: 'Chat', href: '/chat', icon: 'MessageCircle' },
         { label: 'Notificações', href: '/notificacoes', icon: 'Bell' },
       ],
-     },
+     },*/
      {
        group: 'Configurações',
        items: [
