@@ -7,7 +7,7 @@ export default function ProfissionalLayout({
 }: {
    children: React.ReactNode
    }) {
-   const { isLoading } = useRouteGuard('PROFISSIONAL', 'ADMINISTRADOR')
+   const { isLoading } = useRouteGuard('PROFISSIONAL', 'MEDICO', 'ADMINISTRADOR')
 
    if (isLoading) {
       return <div>Carregando... </div>

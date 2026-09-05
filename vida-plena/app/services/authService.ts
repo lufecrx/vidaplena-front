@@ -4,7 +4,7 @@ import type { AuthResponse, LoginRequest, UsuarioResponse } from '../types/auth'
 export const authService = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     const { data } = await api.post<AuthResponse>('/api/v1/auth/login', credentials)
-    setAccessToken(data.token)
+    setAccessToken(data.accessToken)
     return data
   },
 
