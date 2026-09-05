@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Button from '../components/Button'
+import Button from '@/app/components/Button'
 
 type Horario = {
   inicio: string
@@ -75,7 +75,7 @@ export default function AgendaPage() {
 
     const payload = Object.entries(agenda)
       .filter(([, data]) => data.ativo)
-      .flatMap(([dia, data]) => 
+      .flatMap(([dia, data]) =>
         data.horarios.map(h => ({
           diaDaSemana: dia,
           horaInicio: h.inicio,
@@ -84,7 +84,7 @@ export default function AgendaPage() {
       )
 
     console.log('Payload pronto para envio:', payload)
-    
+
     setTimeout(() => {
       alert('Agenda salva com sucesso!')
       setLoading(false)
@@ -103,8 +103,8 @@ export default function AgendaPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             {DIAS_SEMANA.map((dia) => (
-              <div 
-                key={dia.id} 
+              <div
+                key={dia.id}
                 className={`border rounded-xl p-5 transition-all duration-200 ${
                   agenda[dia.id].ativo ? 'border-vp-bem-estar bg-slate-50' : 'border-gray-200 hover:border-gray-300'
                 }`}
@@ -112,9 +112,9 @@ export default function AgendaPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only peer" 
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
                         checked={agenda[dia.id].ativo}
                         onChange={() => toggleDia(dia.id)}
                       />
@@ -153,7 +153,7 @@ export default function AgendaPage() {
                             required
                           />
                         </div>
-                        
+
                         {agenda[dia.id].horarios.length > 1 && (
                           <button
                             type="button"
@@ -166,7 +166,7 @@ export default function AgendaPage() {
                         )}
                       </div>
                     ))}
-                    
+
                     <button
                       type="button"
                       onClick={() => addHorario(dia.id)}
