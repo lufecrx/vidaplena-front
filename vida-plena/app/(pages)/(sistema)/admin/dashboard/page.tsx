@@ -1,84 +1,58 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { StatCard, RecentUsersCard } from "@/app/components/Card";
-import { usuarioService } from '@/app/services/usuarioService';
-import { PaginaUsuariosResponse } from '@/app/types/usuario'
+import { StatCard, TextCard, GraficoCard } from "@/app/components/Card";
+
+
+const dadosConsultas = [
+  { label: "Jan", valor: 40 },
+  { label: "Fev", valor: 65 },
+  { label: "Mar", valor: 50 },
+  { label: "Abr", valor: 95 },
+  { label: "Mai", valor: 120 },
+];
 
 export default function AdminPage() {
-   const [paginaUsuarios, setPaginaUsuarios] = useState<PaginaUsuariosResponse | null>(null)
-   const [loading, setLoading] = useState(true)
-   const [page, setPage] = useState(0)
-
-   useEffect(() => {
-       async function carregar() {
-         try {
-           setLoading(true)
-           // Chamada direta do seu método (passando página atual e tamanho por página)
-           const res = await usuarioService.listarUsuarios(page, 6)
-           setPaginaUsuarios(res)
-         } catch (error) {
-           console.error('Erro ao listar usuários:', error)
-         } finally {
-           setLoading(false)
-         }
-       }
-
-       carregar()
-     }, [page])
-
 
    return (
-      <div>
+     /* Grid de 4 colunas. Deixe as linhas serem criadas automaticamente pelo conteúdo! */
+     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6">
 
-         {/* DEPOIS É POSSIVEL FAZER UMA CHAMADA AO BACKEND E RECEBER ESSES DADOS */}
-         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 p-6">
-            <StatCard
-               title="Total de Usuários"
-               value="1.247"
-               iconName="Users"
-               trendValue="+12%"
-               trendLabel="vs. mês anterior"
-               isPositive={true}
-            />
+       {/* 1. TOPO */}
+       <div className="col-span-1 lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+         <StatCard title="Total de Usuários" value="1.247" iconName="Users" trendValue="+12%" isPositive={true} />
+         <StatCard title="Médicos Ativos" value="86" iconName="Stethoscope" trendValue="+4%" isPositive={true} />
+         <StatCard title="Consultas Hoje" value="34" iconName="CalendarDays" trendValue="+8%" isPositive={true} />
+         <StatCard title="Novos Cadastros (mês)" value="127" iconName="Home" trendValue="+18%" isPositive={true} />
+       </div>
 
-            <StatCard
-               title="Médicos Ativos"
-               value="86"
-               iconName="Stethoscope"
-               trendValue="+4%"
-               trendLabel="vs. mês anterior"
-               isPositive={true}
-            />
+      {/* 2. MEIO/ESQUERDA */}
+      <div className="grid col-span-1 lg:col-span-4 md:grid-cols-2 gap-4">
+         {/* Gráfico de Área */}
+         <GraficoCard
+            title="Consultas Realizadas"
+            subtitle="Total de atendimentos por mês"
+            dados={dadosConsultas}
+            tipo="area"
+         />
 
-            <StatCard
-               title="Consultas Hoje"
-               value="34"
-               iconName="CalendarDays"
-               trendValue="+8%"
-               trendLabel="vs. mês anterior"
-               isPositive={true}
-            />
+         {/* Gráfico de Barras */}
+         <GraficoCard
+            title="Novos Usuários"
+            subtitle="Cadastros efetuados"
+            dados={dadosConsultas}
+            tipo="barras"
+            cor="#0284c7"
+         />
+       </div>
 
-            <StatCard
-               title="Novos Cadastros (mês)"
-               value="127"
-               iconName="Home"
-               trendValue="+18%"
-               trendLabel="vs. mês anterior"
-               isPositive={true}
-            />
-         </div>
-
-         <div className="p-6">
-            <RecentUsersCard
-               data={paginaUsuarios}
-               loading={loading}
-               currentPage={page}
-               onPageChange={(newPage) => setPage(newPage)}
-            />
-         </div>
-
+      {/* 3. MEIO/DIREITA */}
+      <div className="col-span-1 lg:col-span-4">
+         <TextCard
+            title='Notificações'
+            text={"Nenhum aviso."}
+         />
       </div>
+
+   </div>
    )
 }

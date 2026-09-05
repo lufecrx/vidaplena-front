@@ -1,201 +1,265 @@
 "use client";
 
-
-import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { formatarCPF, limparCPF } from "@/app/lib/Formatters";
-import Button from "@/app/components/Button";
+import { useState, useEffect, useCallback } from "react";
+import { formatarCPF, formatarData, formatarTelefone, limparCPF } from "@/app/lib/Formatters";
+import { UsuariosCadastradosCard, TextCard } from "@/app/components/Card";
 import { usuarioService } from "@/app/services/usuarioService";
-import { Usuario } from "@/app/types/usuario";
+import { PaginaUsuariosResponse, Usuario } from "@/app/types/usuario";
+import Button from "@/app/components/Button";
+import CadastroUsuarioModal from "@/app/components/CadastroUsuarioModal";
+
+const PAGE_SIZE = 5;
 
 export default function Usuarios() {
-   const router = useRouter();
-   const [busca, setBusca] = useState("");
-   const [usuario, setUsuario] = useState<Usuario | null>(null);
-   const [resultados, setResultados] = useState<string[]>([]);
+  const [busca, setBusca] = useState("");
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [paginaUsuarios, setPaginaUsuarios] = useState<PaginaUsuariosResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-   async function pesquisarUsuarios(cpfDigitado: string) {
-      const cpfLimpo = limparCPF(cpfDigitado);
-      setBusca(cpfLimpo);
+  const carregarUsuarios = useCallback(async () => {
+    try {
+      setLoading(true);
 
-      if (!cpfLimpo) {
-         setResultados([]);
-         return;
+      if (busca.trim() !== "") {
+        const res = await usuarioService.listarUsuarios(0, 100);
+
+        const listaFiltrada = res.content.filter((u) =>
+          limparCPF(u.cpf).startsWith(busca)
+        );
+
+        const totalElements = listaFiltrada.length;
+        const totalPages = Math.ceil(totalElements / PAGE_SIZE) || 1;
+
+        const inicio = page * PAGE_SIZE;
+        const conteudoPaginado = listaFiltrada.slice(inicio, inicio + PAGE_SIZE);
+
+        setPaginaUsuarios({
+          ...res,
+          content: conteudoPaginado,
+          totalElements,
+          totalPages,
+        });
+      } else {
+        const res = await usuarioService.listarUsuarios(page, PAGE_SIZE);
+        setPaginaUsuarios(res);
       }
+    } catch (error) {
+      console.error("Erro ao listar usuários:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, busca]);
 
-      try {
-         const respostaPaginada = await usuarioService.listarUsuarios(0, 50);
+  useEffect(() => {
+    carregarUsuarios();                                // Minha IDE aponta um erro aqui, mas tem um useCallback que impede que ocorra na função
+  }, [carregarUsuarios]);
 
-         const cpfsFiltrados = respostaPaginada.content
-            .map((usuario) => usuario.cpf)
-            .filter((cpf) => cpf.startsWith(cpfLimpo));
+  function handleBuscaChange(valorInput: string) {
+    const cpfLimpo = limparCPF(valorInput);
+    setBusca(cpfLimpo);
+    setPage(0);
+  }
 
-         setResultados(cpfsFiltrados);
-      } catch (error) {
-         console.error("Erro ao pesquisar CPFs na API:", error);
-         setResultados([]);
+  async function buscarDetalhesUsuario(cpf: string) {
+    try {
+      const usuarioEncontrado = await usuarioService.buscarConta(cpf);
+      if (usuarioEncontrado) {
+        setUsuario(usuarioEncontrado);
       }
-   }
+    } catch (error) {
+      console.error("Erro ao buscar detalhes do usuário:", error);
+    }
+  }
 
-   async function buscarUsuario(cpf: string) {
-      setBusca(cpf);
-      setResultados([]);
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
 
-      try {
-         const usuarioTeste = await usuarioService.buscarConta(cpf);
+      {/* 1. Busca por CPF */}
+      <div className="col-span-1">
+        <TextCard
+          title="Buscar Usuário"
+          text={
+            <div className="flex flex-col gap-4 w-full mt-2">
+              <div className="relative flex flex-col gap-1.5 w-full">
+                <label className="text-xs font-medium text-slate-500">
+                  Digite o CPF do usuário
+                </label>
 
-         if (usuarioTeste) {
-            setUsuario(usuarioTeste);
-         }
-      } catch (error) {
-         console.error("Erro ao buscar usuário:", error);
-      }
-   }
-
-   return (
-      <div className="gerenciar-usuarios-container"
-         style={{
-            border: "1px solid black", padding: "10px", borderRadius: "10px", display: "flex", flexDirection: "column", gap: "20px",
-            backgroundColor:"white", color:"black"
-         }}>
-         <Button
-            type="button"
-            onClick={() => router.back()}
-         >
-            Cancelar</Button>
-         <Button>
-            <Link href={"/admin/usuarios/novo"}>
-               Cadastrar novo usuario
-            </Link>
-         </Button>
-         <div className="container-busca-usuarios">
-            <label>Digite o cpf de um usuário:</label>
-            <input
-               type="search"
-               placeholder="Digite aqui..."
-               value={formatarCPF(busca)}
-               onChange={(event) => pesquisarUsuarios(event.target.value)}
-               maxLength={14}
-               style={{ border:"1px solid black", borderRadius:"4px", marginLeft:"4px" }}
-            />
-            {busca.length > 0 && resultados.length > 0 && (
-               <ul style={{ listStyleType: "none", padding: 0 }}>
-                  {resultados.map((busca) => (
-                     <li key={busca} style={{ marginBottom: "8px" }}>
-                        <Button onClick={() => buscarUsuario(busca)}>
-                           {formatarCPF(busca)}
-                        </Button>
-                     </li>
-                  ))}
-               </ul>
-            )}
-         </div>
-
-
-         { usuario &&
-            <div
-               className="container-card-usuario"
-               style={{
-                  display: "flex", flexDirection: "row",
-                  gap: "20px", border: "1.5px solid black",
-                  borderRadius: "10px", padding: "10px",
-                  backgroundColor:"", color:"black"
-               }}
-            >
-               <div
-                  className="profile-image-portrait"
-                  style={{
-                     width:"100px", height:"200px",
-                     overflow:"hidden"
-                  }}
-               >
-                  <Image
-                     src={"/images/DefaultUserImage.png"}
-                     alt="User not found"
-                     width={200}
-                     height={200}
-                     style={{
-                        objectFit:"cover"
-                     }}
+                <div className="relative w-full">
+                  <input
+                    type="search"
+                    placeholder="000.000.000-00"
+                    value={formatarCPF(busca)}
+                    onChange={(event) => handleBuscaChange(event.target.value)}
+                    maxLength={14}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
                   />
-               </div>
-               <div className="card-usuario-info-container">
-                  <div
-                     className="user-profile-info-container"
-                     style={{ display:"flex", justifyContent:"space-between", gap:"50px" }}
-                  >
-                     <div className="Principal user-info">
-                        <div className="campo-container">
-                           <label>Nome: {usuario?.nome}</label>
-                        </div>
-                        <div className="campo-container">
-                           <label>E-mail: {usuario?.email}</label>
-                        </div>
-                        <div className="campo-container">
-                           <label>CPF: {usuario?.cpf}</label>
-                        </div>
-                        <div className="campo-container">
-                           <label>Data de Nascimento:{ usuario?.dataNascimento } </label>
-                        </div>
-                     </div>
-                     <div className="Secondary user-info">
-                        <div className="campo-container">
-                           <label>Perfil: {Array.isArray(usuario?.tipos) ? usuario?.tipos.join(", ") : usuario?.tipos}</label>
-                        </div>
+                </div>
+              </div>
 
-                        {/*usuario?.tipo.includes("MEDICO") &&
-                           <div className="campo-container">
-                              <label>CRM: usuario?.crm</label>
-                           </div>
-                        */}
+              <div className="relative flex items-center my-1">
+                <div className="grow border-t border-slate-100"></div>
+              </div>
 
-                        {/* IMPORTANTE: não existe usuario nutricionista
-                           usuario?.tipos.includes("NUTRICIONISTA") &&
-                           <div className="campo-container">
-                              <label>CRN: usuario?.crn</label>
-                           </div>
-                        */}
-
-                        <div className="campo-container">
-                           <label>Id: { usuario?.id }</label>
-                        </div>
-
-                        <div className="campo-container">
-                           <label>Telefone: {usuario?.telefone}</label>
-                        </div>
-                        <div className="campo-container">
-                           <label>Status: {usuario?.status}</label>
-                        </div>
-                     </div>
-                  </div>
-                  <div className="Admin-buttons" style={{ display:"flex", flexDirection:"row", gap:"20px" }}>
-                     {usuario?.status === "ATIVO" &&
-                        <Button onClick={async () => {
-                           await usuarioService.desativarConta(usuario.id);
-                           await buscarUsuario(usuario.cpf);
-                        }}>Desativar</Button>
-                     }
-                     {usuario?.status === "INATIVO" &&
-                        <Button onClick={async () => {
-                           await usuarioService.ativarConta(usuario.id);
-                           await buscarUsuario(usuario.cpf);
-                        }}>Ativar</Button>
-                     }
-                     <Button variant="danger" onClick={async () => {
-                        await usuarioService.bloquearConta(usuario.id);
-                        await buscarUsuario(usuario.cpf)
-                     }}>Bloquear</Button>
-                     <Button variant="danger" onClick={async () => {
-                        await usuarioService.excluirConta(usuario.id);
-                        // TODO: Confirmação após apertar botão.
-                        setUsuario(null);
-                     }}>Excluir</Button>
-                  </div>
-               </div>
-            </div>}
-
+              {/* Botão para abrir o Modal */}
+              <Button
+                className="w-full justify-center gap-2"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Cadastrar novo usuário
+              </Button>
+            </div>
+          }
+        />
       </div>
-   )
+
+      {/* 2. Detalhes do Usuário Selecionado */}
+      <div className="col-span-1 lg:col-span-3">
+        <TextCard
+          image={usuario ? "/images/DefaultUserImage.png" : undefined}
+          title={usuario ? usuario.nome : "Nenhum usuário selecionado"}
+          text={
+            <div className="flex flex-col justify-between w-full h-auto lg:h-[190px] transition-all">
+              {!usuario ? (
+                <div className="flex-1 flex items-center justify-center text-slate-400 font-normal italic text-sm">
+                  Clique em um usuário na lista abaixo para ver os detalhes.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-y-3 gap-x-6 w-full text-sm pt-1">
+                  <div className="flex flex-col">
+                    <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+                      E-mail
+                    </span>
+                    <span className="font-semibold text-slate-700 truncate">
+                      {usuario.email || "-"}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+                      Telefone
+                    </span>
+                    <span className="font-semibold text-slate-700">
+                      {formatarTelefone(usuario.telefone) || "-"}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+                      CPF
+                    </span>
+                    <span className="font-semibold text-slate-700">
+                      {formatarCPF(usuario.cpf) || "-"}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+                      Data de Nascimento
+                    </span>
+                    <span className="font-semibold text-slate-700">
+                      {formatarData(usuario.dataNascimento) || "-"}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+                      Perfil
+                    </span>
+                    <span className="font-semibold text-slate-700">
+                      {Array.isArray(usuario.tipos)
+                        ? usuario.tipos.join(", ")
+                        : usuario.tipos || "-"}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col items-start">
+                    <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium mb-1">
+                      Status
+                    </span>
+                    <span
+                      className={`px-2.5 py-0.5 text-xs font-bold rounded-full ${
+                        usuario.status === "ATIVO"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-amber-100 text-amber-700"
+                      }`}
+                    >
+                      {usuario.status}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-3 w-full mt-auto">
+                {usuario?.status === "ATIVO" && (
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      await usuarioService.desativarConta(usuario.id);
+                      await buscarDetalhesUsuario(usuario.cpf);
+                      await carregarUsuarios();
+                    }}
+                  >
+                    Desativar
+                  </Button>
+                )}
+
+                {usuario?.status === "INATIVO" && (
+                  <Button
+                    onClick={async () => {
+                      await usuarioService.ativarConta(usuario.id);
+                      await buscarDetalhesUsuario(usuario.cpf);
+                      await carregarUsuarios();
+                    }}
+                  >
+                    Ativar
+                  </Button>
+                )}
+
+                {usuario && (
+                  <Button
+                    variant="danger"
+                    onClick={async () => {
+                      if (
+                        confirm(
+                          `Tem certeza que deseja excluir o usuário ${usuario.nome}?`
+                        )
+                      ) {
+                        await usuarioService.excluirConta(usuario.id);
+                        setUsuario(null);
+                        await carregarUsuarios();
+                      }
+                    }}
+                  >
+                    Excluir
+                  </Button>
+                )}
+              </div>
+            </div>
+          }
+        />
+      </div>
+
+      {/* 3. Tabela de Usuários */}
+      <div className="col-span-1 lg:col-span-4">
+        <UsuariosCadastradosCard
+          data={paginaUsuarios}
+          loading={loading}
+          currentPage={page}
+          pageSize={PAGE_SIZE}
+          onPageChange={(newPage) => setPage(newPage)}
+          onSelectUser={(u) => setUsuario(u)}
+        />
+      </div>
+
+      {/* Modal de Cadastro */}
+      <CadastroUsuarioModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => carregarUsuarios()}
+      />
+    </div>
+  );
 }
