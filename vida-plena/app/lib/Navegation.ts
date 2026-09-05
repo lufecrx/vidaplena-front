@@ -111,21 +111,21 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Visão Geral',
       items: [
-        { label: 'Dashboard', href: '/profissional/dashboard', icon: 'LayoutDashboard' },
+        { label: 'Dashboard', href: '/profissionais/dashboard', icon: 'LayoutDashboard' },
       ],
     },
     {
       group: 'Atendimento',
       items: [
-        { label: 'Minha Agenda', href: '/profissional/agenda', icon: 'CalendarDays' },
-        { label: 'Disponibilidade', href: '/profissional/disponibilidade', icon: 'Clock' },
+        { label: 'Minha Agenda', href: '/profissionais/agenda', icon: 'CalendarDays' },
+        { label: 'Disponibilidade', href: '/profissionais/disponibilidade', icon: 'Clock' },
       ],
     },
     {
       group: 'Pacientes',
       items: [
-        { label: 'Meus Pacientes', href: '/profissional/pacientes', icon: 'Users' },
-        { label: 'Monitoramento', href: '/profissional/monitoramento', icon: 'Activity' },
+        { label: 'Meus Pacientes', href: '/profissionais/pacientes', icon: 'Users' },
+        { label: 'Monitoramento', href: '/profissionais/monitoramento', icon: 'Activity' },
       ],
     },
     {
@@ -140,15 +140,15 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Visão Geral',
       items: [
-        { label: 'Dashboard', href: '/profissional/dashboard', icon: 'LayoutDashboard' },
+        { label: 'Dashboard', href: '/profissionais/dashboard', icon: 'LayoutDashboard' },
       ],
     },
     {
       group: 'Atendimento',
       items: [
-        { label: 'Minha Agenda', href: '/profissional/agenda', icon: 'CalendarDays' },
-        { label: 'Disponibilidade', href: '/profissional/disponibilidade', icon: 'Clock' },
-        { label: 'Visitas Domiciliares', href: '/profissional/visitas', icon: 'Home' },
+        { label: 'Minha Agenda', href: '/profissionais/agenda', icon: 'CalendarDays' },
+        { label: 'Disponibilidade', href: '/profissionais/disponibilidade', icon: 'Clock' },
+        { label: 'Visitas Domiciliares', href: '/profissionais/visitas', icon: 'Home' },
       ],
     },
     {
@@ -206,6 +206,12 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
         //{ label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
         //{ label: 'Meu Plano', href: '/paciente/plano', icon: 'PackageCheck' },
       ],
+    },
+    {
+      group: 'Comunicação',
+      items: [
+        { label: 'Chat', href: '/chat', icon: 'MessageCircle' },
+      ],
     },/*
     {
       group: 'Financeiro',
@@ -216,7 +222,6 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Comunicação',
       items: [
-        { label: 'Chat', href: '/chat', icon: 'MessageCircle' },
         { label: 'Notificações', href: '/notificacoes', icon: 'Bell' },
       ],
      },*/
@@ -242,6 +247,12 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
         { label: 'Agendamentos', href: '/paciente/agendamentos', icon: 'CalendarDays' },
         { label: 'Métricas', href: '/paciente/metricas', icon: 'Activity' },
         { label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
+      ],
+    },
+    {
+      group: 'Comunicação',
+      items: [
+        { label: 'Chat', href: '/chat', icon: 'MessageCircle' },
       ],
     },
   ],

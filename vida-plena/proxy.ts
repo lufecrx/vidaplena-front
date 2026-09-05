@@ -8,40 +8,46 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   '/admin':        ['ADMINISTRADOR'],
   '/gestor':       ['ADMINISTRADOR', 'GESTOR'],
   '/financeiro':   ['ADMINISTRADOR', 'FINANCEIRO'],
-  '/profissional': ['MEDICO', 'PROFISSIONAL'],
+  '/profissionais':['MEDICO', 'PROFISSIONAL'],
   '/recepcionista':['ADMINISTRADOR', 'RECEPCIONISTA'],
   '/farmacia':     ['FARMACIA'],
   '/empresa':      ['REPRESENTANTE_EMPRESA'],
   '/paciente':     ['PACIENTE', 'RESPONSAVEL'],
+  '/chat':         ['PACIENTE', 'RESPONSAVEL', 'MEDICO', 'PROFISSIONAL', 'ADMINISTRADOR'],
 }
 
-export function middleware(request: NextRequest) {
+// IMPORTANTE: o backend hoje NÃO emite nenhum cookie de sessão — o login
+// (POST /api/v1/auth/login) devolve accessToken/refreshToken só no corpo
+// JSON, guardado em memória no client (ver api.ts). Sem um cookie legível
+// aqui no servidor, o proxy não tem como saber se a requisição está
+// autenticada. A checagem por `vidaplena_session` abaixo ficava sempre
+// falhando, então NÃO a religue enquanto o backend não passar a setar esse
+// cookie — religar sem isso redireciona todo mundo pra /login em loop,
+// mesmo logado. Até lá, quem garante autenticação/papel é o client, via
+// useRouteGuard (app/hooks/Userouteguard.ts), que já funciona (consulta
+// GET /api/v1/usuarios/me de verdade).
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Permite rotas públicas
   if (PUBLIC_ROUTES.some((r) => pathname.startsWith(r))) {
     return NextResponse.next()
   }
 
-  // Lê o token do cookie (o backend deve setar um cookie "session" ou similar
-  // com informações mínimas do usuário para o middleware poder verificar sem
-  // chamar a API — em produção considere um JWT assinado no cookie)
   const sessionCookie = request.cookies.get('vidaplena_session')
-
   if (!sessionCookie) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    // TODO(backend): reativar o bloqueio assim que existir esse cookie.
+    return NextResponse.next()
   }
 
   let session: { tipos?: string[] }
   try {
     session = JSON.parse(atob(sessionCookie.value))
   } catch {
-    return NextResponse.redirect(new URL('/login', request.url))
+    return NextResponse.next()
   }
 
   const userTipos = session.tipos ?? []
 
-  // Verifica permissão para o prefixo da rota
   for (const [prefix, allowed] of Object.entries(ROUTE_PERMISSIONS)) {
     if (pathname.startsWith(prefix)) {
       const temPermissao = allowed.some((role) => userTipos.includes(role))

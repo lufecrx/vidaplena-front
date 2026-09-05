@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { AxiosError } from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Button from "@/app/components/Button";
 import {
     AuthFormError,
@@ -107,7 +106,6 @@ function PasswordToggleButton({
 }
 
 export default function Login() {
-    const router = useRouter();
     const { login, isLoading: authLoading } = useAuth();
 
     const [email, setEmail] = useState("");
@@ -252,16 +250,6 @@ export default function Login() {
                     disabled={isFormDisabled}
                 >
                     {isSubmitting ? "Entrando..." : "Entrar"}
-                </Button>
-
-                <Button
-                    variant="transparent"
-                    size="md"
-                    className="w-full"
-                    disabled={isFormDisabled}
-                    onClick={() => router.push("/cadastro")}
-                >
-                    Cadastre-se
                 </Button>
             </form>
         </AuthPageLayout>

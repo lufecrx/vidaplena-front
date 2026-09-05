@@ -1,14 +1,7 @@
-export type TipoUsuario =
-  | 'ADMINISTRADOR'
-  | 'GESTOR'
-  | 'FINANCEIRO'
-  | 'MEDICO'
-  | 'PROFISSIONAL'
-  | 'RECEPCIONISTA'
-  | 'PACIENTE'
-  | 'RESPONSAVEL'
-  | 'FARMACIA'
-  | 'REPRESENTANTE_EMPRESA'
+// TipoUsuario tem uma única definição em types/usuario.ts — reexportado aqui
+// para não quebrar os imports existentes deste módulo.
+import type { TipoUsuario } from './usuario'
+export type { TipoUsuario } from './usuario'
 
 export interface UsuarioResponse {
   id: string
@@ -28,7 +21,7 @@ export interface LoginRequest {
 }
 
 export interface AuthResponse {
-  token: string
+  accessToken: string
   refreshToken: string
   expiresIn: number
   tipoUsuario: TipoUsuario

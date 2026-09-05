@@ -4,7 +4,7 @@ import type { CriarUsuarioRequest, Usuario, PaginaUsuariosResponse } from '../ty
 export const usuarioService = {
 
    async getMeuPerfil(): Promise<Usuario> {
-      const response = await api.get(`api/v1/usuarios/me`);
+      const response = await api.get(`/api/v1/usuarios/me`);
 
       return response.data;
    },
