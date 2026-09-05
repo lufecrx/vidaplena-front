@@ -111,3 +111,19 @@ export function senhaValida(senha: string, repetirSenha: string): boolean{
 }
 
 // TODO: Validar Telefone
+export function telefoneValido(telefone: string): boolean {
+
+  if (telefone.length < 10 || telefone.length > 11) {
+    return false;
+  }
+
+  if (/^(\d)\1+$/.test(telefone)) {
+    return false;
+  }
+
+  if (telefone.length === 11 && telefone[2] !== "9") {
+    return false;
+  }
+
+  return true;
+}
