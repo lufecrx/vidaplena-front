@@ -127,7 +127,7 @@ export function StatCard({
 */
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { PaginaUsuariosResponse } from '../types/usuario'
+import { PaginaUsuariosResponse, Usuario } from '../types/usuario'
 import { Component } from 'react'
 
 interface UsuariosCadastradosCardProps {
@@ -289,7 +289,8 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-} from "recharts";
+} from "recharts"
+import { formatarCPF, formatarData } from '../lib/Formatters'
 
 export interface ItemDadoGrafico {
   label: string;
