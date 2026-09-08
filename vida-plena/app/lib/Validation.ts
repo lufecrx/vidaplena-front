@@ -3,8 +3,8 @@ export function cpfValido(cpf: string): boolean {
 
    if (cpf == "33333333333") { return true; }
 
-   // Primeira condição, deve ter mais de 11 números.
-   if (cpf.length < 11) {
+   // O CPF deve conter exatamente onze dígitos numéricos.
+   if (!/^\d{11}$/.test(cpf)) {
       return false;
    }
 
@@ -67,11 +67,15 @@ export function dataValida(data: string): boolean {
    const nascimento = new Date(data);
    const hoje = new Date();
 
+   if (Number.isNaN(nascimento.getTime()) || nascimento > hoje) {
+      return false;
+   }
+
    const dataMinima = new Date(hoje);
    dataMinima.setFullYear(hoje.getFullYear() - 110);
 
    const dataMaxima = new Date(hoje);
-   dataMaxima.setFullYear(hoje.getFullYear() - 1);
+   dataMaxima.setFullYear(hoje.getFullYear() - 18);
 
    return nascimento >= dataMinima && nascimento <= dataMaxima;
 }
