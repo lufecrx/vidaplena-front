@@ -277,6 +277,95 @@ export function UsuariosCadastradosCard({
 
 
 /*
+*
+*/
+
+import React from 'react'
+
+export interface TableColumn {
+  key: string
+  label: string
+}
+
+export interface TableCardProps {
+  title?: string
+  text?: string | React.ReactElement
+  columns?: TableColumn[]
+  data?: Record<string, React.ReactNode>[]
+}
+
+export function TableCard({
+  title,
+  text,
+  columns,
+  data,
+}: TableCardProps) {
+  return (
+    <div className="flex flex-col items-start rounded-2xl bg-white p-6 shadow-sm border border-slate-100/80 transition-all hover:shadow-md gap-4 w-full">
+      {/* Título */}
+      {title && (
+        <h3 className="text-xl font-bold tracking-tight text-slate-800">
+          {title}
+        </h3>
+      )}
+
+      {/* Texto ou Elemento Livre (Opcional) */}
+      {text && (
+        <div className="text-xs font-medium text-slate-500 w-full">
+          {text}
+        </div>
+      )}
+
+      {/* Tabela Genérica Reutilizável */}
+      {columns && data && data.length > 0 && (
+        <div className="overflow-x-auto w-full mt-1">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="bg-slate-50 text-[11px] font-bold tracking-wider text-slate-400 uppercase">
+                {columns.map((col, index) => {
+                  const isFirst = index === 0
+                  const isLast = index === columns.length - 1
+
+                  return (
+                    <th
+                      key={col.key}
+                      className={`py-2.5 px-4 ${
+                        isFirst ? 'rounded-l-lg' : ''
+                      } ${isLast ? 'rounded-r-lg' : ''}`}
+                    >
+                      {col.label}
+                    </th>
+                  )
+                })}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {data.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className="transition-colors duration-150 hover:bg-slate-50/80"
+                >
+                  {columns.map((col) => (
+                    <td
+                      key={col.key}
+                      className="py-3 px-4 font-medium text-slate-700 wrap-break-word"
+                    >
+                      {row[col.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+
+/*
 *   ------------------------------  Card grande com gráfico ------------------------------
 */
 
