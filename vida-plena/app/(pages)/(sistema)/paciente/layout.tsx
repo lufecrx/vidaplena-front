@@ -7,7 +7,7 @@ export default function PacienteLayout({
 }: {
    children: React.ReactNode
 }) {
-  const { isLoading } = useRouteGuard('PACIENTE', 'ADMINISTRADOR')
+  const { isLoading } = useRouteGuard('PACIENTE', 'RESPONSAVEL', 'ADMINISTRADOR')
 
   if (isLoading) {
     return <div className="flex h-screen items-center justify-center bg-[#F3F6F1]">Carregando...</div>
