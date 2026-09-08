@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { authService } from '../services/authService'
 import { getAccessToken, setAccessToken } from '../../api'
 import type { UsuarioResponse, TipoUsuario, LoginRequest } from '../types/auth'
@@ -17,13 +17,23 @@ interface AuthContextData {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
+// Rotas que não exigem sessão — evita bater em /me e /refresh à toa
+const PUBLIC_ROUTES = ['/login']
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [usuario, setUsuario] = useState<UsuarioResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const pathname = usePathname()
 
-  // Ao montar, tenta recuperar sessão caso haja indicador de sessão salva
   useEffect(() => {
+    if (PUBLIC_ROUTES.includes(pathname)) {
+      setIsLoading(false)
+      return
+    }
+
+    let active = true
+
     async function hydrateSession() {
       const token = getAccessToken()
       if (!token) {
@@ -34,22 +44,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         const perfil = await authService.getMeuPerfil()
-        setUsuario(perfil)
+        if (active) setUsuario(perfil)
       } catch {
-        setUsuario(null)
-        setAccessToken(null)
+        if (active) setUsuario(null)
       } finally {
-        setIsLoading(false)
+        if (active) setIsLoading(false)
       }
     }
+
     hydrateSession()
-  }, [])
+
+    return () => {
+      active = false
+    }
+  }, [pathname])
 
   const login = useCallback(async (credentials: LoginRequest) => {
     const authData = await authService.login(credentials)
     const perfil = authData.usuario || (await authService.getMeuPerfil())
     setUsuario(perfil)
-    // Redireciona conforme o tipo principal do usuário
     router.replace(getHomeByRole(perfil.tipos))
   }, [router])
 
@@ -82,15 +95,13 @@ export function useAuth() {
   return ctx
 }
 
-// ── Redireciona cada perfil para o dashboard correto ──────────────────────
 function getHomeByRole(tipos: TipoUsuario[]): string {
   if (tipos.includes('ADMINISTRADOR')) return '/admin/dashboard'
   if (tipos.includes('GESTOR')) return '/gestor/dashboard'
   if (tipos.includes('FINANCEIRO')) return '/financeiro/dashboard'
-  if (tipos.includes('MEDICO') || tipos.includes('PROFISSIONAL')) return '/profissional/dashboard'
+  if (tipos.includes('MEDICO') || tipos.includes('PROFISSIONAL')) return '/profissionais/dashboard'
   if (tipos.includes('RECEPCIONISTA')) return '/recepcionista/agendamentos'
   if (tipos.includes('FARMACIA')) return '/farmacia/receitas'
   if (tipos.includes('REPRESENTANTE_EMPRESA')) return '/empresa/dashboard'
-  // Paciente e Responsável
   return '/paciente/dashboard'
 }

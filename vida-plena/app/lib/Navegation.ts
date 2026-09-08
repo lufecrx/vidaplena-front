@@ -26,10 +26,10 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
       group: 'Usuários',
       items: [
         { label: 'Usuários', href: '/admin/usuarios', icon: 'Users' },
-        { label: 'Permissões', href: '/admin/permissoes', icon: 'ShieldCheck' },
-        { label: 'Log de Auditoria', href: '/admin/auditoria', icon: 'ClipboardList' },
+        //{ label: 'Permissões', href: '/admin/permissoes', icon: 'ShieldCheck' },
+        //{ label: 'Log de Auditoria', href: '/admin/auditoria', icon: 'ClipboardList' },
       ],
-    },
+    }/* ,
     {
       group: 'Clínica',
       items: [
@@ -57,7 +57,7 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
       items: [
         { label: 'Configurações', href: '/admin/configuracoes', icon: 'Settings' },
       ],
-    },
+    },*/
   ],
 
   GESTOR: [
@@ -111,21 +111,21 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Visão Geral',
       items: [
-        { label: 'Dashboard', href: '/profissional/dashboard', icon: 'LayoutDashboard' },
+        { label: 'Dashboard', href: '/profissionais/dashboard', icon: 'LayoutDashboard' },
       ],
     },
     {
       group: 'Atendimento',
       items: [
-        { label: 'Minha Agenda', href: '/profissional/agenda', icon: 'CalendarDays' },
-        { label: 'Disponibilidade', href: '/profissional/disponibilidade', icon: 'Clock' },
+        { label: 'Minha Agenda', href: '/profissionais/agenda', icon: 'CalendarDays' },
+        { label: 'Disponibilidade', href: '/profissionais/disponibilidade', icon: 'Clock' },
       ],
     },
     {
       group: 'Pacientes',
       items: [
-        { label: 'Meus Pacientes', href: '/profissional/pacientes', icon: 'Users' },
-        { label: 'Monitoramento', href: '/profissional/monitoramento', icon: 'Activity' },
+        { label: 'Meus Pacientes', href: '/profissionais/pacientes', icon: 'Users' },
+        { label: 'Monitoramento', href: '/profissionais/monitoramento', icon: 'Activity' },
       ],
     },
     {
@@ -140,15 +140,15 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Visão Geral',
       items: [
-        { label: 'Dashboard', href: '/profissional/dashboard', icon: 'LayoutDashboard' },
+        { label: 'Dashboard', href: '/profissionais/dashboard', icon: 'LayoutDashboard' },
       ],
     },
     {
       group: 'Atendimento',
       items: [
-        { label: 'Minha Agenda', href: '/profissional/agenda', icon: 'CalendarDays' },
-        { label: 'Disponibilidade', href: '/profissional/disponibilidade', icon: 'Clock' },
-        { label: 'Visitas Domiciliares', href: '/profissional/visitas', icon: 'Home' },
+        { label: 'Minha Agenda', href: '/profissionais/agenda', icon: 'CalendarDays' },
+        { label: 'Disponibilidade', href: '/profissionais/disponibilidade', icon: 'Clock' },
+        { label: 'Visitas Domiciliares', href: '/profissionais/visitas', icon: 'Home' },
       ],
     },
     {
@@ -194,19 +194,25 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Início',
       items: [
-        { label: 'Meu Painel', href: '/paciente/dashboard', icon: 'LayoutDashboard' },
+        { label: 'Dashboard', href: '/paciente/dashboard', icon: 'LayoutDashboard' },
       ],
     },
     {
       group: 'Saúde',
       items: [
-        { label: 'Agendamentos', href: '/paciente/agendamentos', icon: 'CalendarDays' },
+        //{ label: 'Agendamentos', href: '/paciente/agendamentos', icon: 'CalendarDays' },
         { label: 'Prontuário', href: '/paciente/prontuario', icon: 'FileText' },
-        { label: 'Minhas Métricas', href: '/paciente/metricas', icon: 'Activity' },
-        { label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
-        { label: 'Meu Plano', href: '/paciente/plano', icon: 'PackageCheck' },
+        { label: 'Métricas', href: '/paciente/metricas', icon: 'Activity' },
+        //{ label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
+        //{ label: 'Meu Plano', href: '/paciente/plano', icon: 'PackageCheck' },
       ],
     },
+    {
+      group: 'Comunicação',
+      items: [
+        { label: 'Chat', href: '/chat', icon: 'MessageCircle' },
+      ],
+    },/*
     {
       group: 'Financeiro',
       items: [
@@ -216,10 +222,15 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
     {
       group: 'Comunicação',
       items: [
-        { label: 'Chat', href: '/chat', icon: 'MessageCircle' },
         { label: 'Notificações', href: '/notificacoes', icon: 'Bell' },
       ],
-    },
+     },*/
+     {
+       group: 'Configurações',
+       items: [
+         { label: 'Sair', href: '/logout', icon: 'Exit' },
+       ],
+     },
   ],
 
   RESPONSAVEL: [
@@ -236,6 +247,12 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
         { label: 'Agendamentos', href: '/paciente/agendamentos', icon: 'CalendarDays' },
         { label: 'Métricas', href: '/paciente/metricas', icon: 'Activity' },
         { label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
+      ],
+    },
+    {
+      group: 'Comunicação',
+      items: [
+        { label: 'Chat', href: '/chat', icon: 'MessageCircle' },
       ],
     },
   ],
@@ -260,4 +277,32 @@ export function getNavForUser(tipos: TipoUsuario[]): NavGroup[] {
   }
 
   return []
+}
+
+
+export function getCurrentNavLabel(
+  pathname: string,
+  tipos: TipoUsuario[] | null
+): string | null {
+  const nav = getNavForUser(tipos ?? [])
+
+  for (const group of nav) {
+    for (const item of group.items) {
+      if (item.href === pathname) {
+        return item.label
+      }
+
+      if (item.children) {
+        const child = item.children.find(
+          (child) => child.href === pathname
+        )
+
+        if (child) {
+          return child.label
+        }
+      }
+    }
+  }
+
+  return null
 }
