@@ -10,7 +10,7 @@ export interface UsuarioResponse {
   cpf: string
   telefone?: string
   fotoPerfil?: string
-  status: 'ATIVO' | 'INATIVO'
+  status: 'ATIVO' | 'INATIVO' | 'PENDENTE_VALIDACAO' | 'BLOQUEADO'
   tipos: TipoUsuario[]
   dataCriacao: string
 }
