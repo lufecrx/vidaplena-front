@@ -5,14 +5,15 @@ import { usuarioService } from "@/app/services/usuarioService";
 //import { prontuarioService } from "@/app/services/prontuarioService";
 //import { pacienteService } from "@/app/services/pacienteService";
 import { Usuario } from "@/app/types/usuario";
-import { CriarProntuarioRequest } from "@/app/types/prontuario";          // Seria interessante um tipo Prontuario
-import { CriarPacienteRequest } from "@/app/types/paciente";              // Seria interessante um tipo Paciente
+//import { CriarProntuarioRequest } from "@/app/types/prontuario";          // Seria interessante um tipo Prontuario
+//import { CriarPacienteRequest } from "@/app/types/paciente";              // Seria interessante um tipo Paciente
 import { TextCard } from "@/app/components/Card";
+import { TableCard } from '@/app/components/Card'
 
 export default function PacienteDashboard() {
 
    const [user, setUser] = useState<Usuario | null>(null);
-   const [prontuario, setProntuario] = useState<CriarProntuarioRequest | null>(null);
+   //const [prontuario, setProntuario] = useState<CriarProntuarioRequest | null>(null);
 
    /*
    *  ---------------------- TODO: Para carregar os dados do banco de dados, atualmente com problema interno no backend.
@@ -62,16 +63,77 @@ export default function PacienteDashboard() {
       carregarDados();
    }, []);
 
-   const prontuarioTeste = {
-      id: `${ user?.id }`,
-      observacoesIniciais: "Olho vermelho, formigamento e fadiga. Fortes sinais de dor e caganeira. Suspeitas de Chikungunya"
-   }
-
    const pacienteTeste = {
       id: "123456-0987-654KDSA-230000",
       bloodType: "O Positivo",
       Alergias: ["amendoim", "camarão", "poeira"]
    }
+
+   const colunasMedicamento = [
+     { key: 'remedio', label: 'MEDICAMENTO' },
+     { key: 'dosagem', label: 'DOSAGEM' },
+     { key: 'frequencia', label: 'FREQUÊNCIA / VIA' },
+     { key: 'duracao', label: 'DURAÇÃO' },
+     { key: 'status', label: 'STATUS' },
+   ]
+
+   const dadosMedicamentos = [
+     {
+       remedio: 'Losartana Potássica',
+       dosagem: '50mg',
+       frequencia: '1x ao dia (Manhã) - Via Oral',
+       duracao: 'Uso Contínuo',
+       status: (
+         <span className="inline-block rounded-md px-2.5 py-1 text-[11px] font-bold bg-emerald-100/80 text-emerald-800">
+           Ativo
+         </span>
+       ),
+     },
+     {
+       remedio: 'Metformina (Glucofage)',
+       dosagem: '850mg',
+       frequencia: '2x ao dia (Após refeições) - Via Oral',
+       duracao: 'Uso Contínuo',
+       status: (
+         <span className="inline-block rounded-md px-2.5 py-1 text-[11px] font-bold bg-emerald-100/80 text-emerald-800">
+           Ativo
+         </span>
+       ),
+     },
+     {
+       remedio: 'Amoxicilina + Clavulanato',
+       dosagem: '875mg + 125mg',
+       frequencia: '8/8h (1 comprimido) - Via Oral',
+       duracao: '7 dias (Finaliza em 12/05)',
+       status: (
+         <span className="inline-block rounded-md px-2.5 py-1 text-[11px] font-bold bg-blue-100/80 text-blue-800">
+           Em curso
+         </span>
+       ),
+     },
+     {
+       remedio: 'Dipirona Sódica',
+       dosagem: '1g (500mg/ml - gotas)',
+       frequencia: 'Se houver dor ou febre (Máx 6/6h)',
+       duracao: 'Se necessário',
+       status: (
+         <span className="inline-block rounded-md px-2.5 py-1 text-[11px] font-bold bg-slate-100 text-slate-700">
+           S.O.S.
+         </span>
+       ),
+     },
+     {
+       remedio: 'Omeprazol',
+       dosagem: '20mg',
+       frequencia: '1x ao dia (Jejum) - Via Oral',
+       duracao: 'Interrompido em 10/04',
+       status: (
+         <span className="inline-block rounded-md px-2.5 py-1 text-[11px] font-bold bg-rose-100/80 text-rose-800">
+           Suspenso
+         </span>
+       ),
+     },
+   ]
 
    if (!user) {
       return (
@@ -85,6 +147,7 @@ export default function PacienteDashboard() {
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-4 p-6 sm:grid-cols-2">
 
          <TextCard
+            image={"/images/DefaultUserImage.png"}
             title="Dados do Paciente"
             text={
             <>
@@ -105,75 +168,83 @@ export default function PacienteDashboard() {
             }
          />
 
-         <TextCard
-            title="Resumo Clínico"
-            text={
-            <>
-               <b>Histórico familiar:</b> <br />
-               Lorem ipsum assum Lorem ipsum assum Lorem ipsum assum Lorem ipsum
-               assum Lorem ipsum assum Lorem ipsum assum
-               <br />
-               <br />
-               <b>Condição:</b> <br />
-               Lorem ipsum assum Lorem ipsum assum Lorem ipsum assum Lorem ipsum
-               assum Lorem ipsum assum
-            </>
-            }
-         />
+         <div className="col-span-2">
+            <TextCard
+               title="Anamnese Médica. 12/05/2026 - Dr. Felipe Arthur"
+               text={
+                  <>
 
-         <TextCard
-            title="Medicamentos e Prescrições"
-            text={
-            <>
-               <table>
-                  <thead>
-                  <tr>
-                     <th>Remédio</th>
-                     <th>Dosagem</th>
-                     <th>Frequência</th>
-                  </tr>
-                  </thead>
 
-                  <tbody>
-                  <tr>
-                     <td>Dipirona</td>
-                     <td>500mg</td>
-                     <td>1x dia</td>
-                  </tr>
-                  <tr>
-                     <td>Paracetamol</td>
-                     <td>750mg</td>
-                     <td>2x dia</td>
-                  </tr>
-                  </tbody>
-               </table>
-            </>
-            }
-         />
+                     <div className="grid grid-cols-2 gap-6 mt-3">
+                        <TextCard
+                           title="Queixa Principal"
+                           text={
+                             <>
+                               <p><strong>Sintoma:</strong> Cefaleia intensa (suspeita de enxaqueca).</p>
+                               <p><strong>Duração:</strong> 3 dias.</p>
+                               <p><strong>Padrão:</strong> Predomínio no período matutino.</p>
+                             </>
+                           }
+                        />
 
-         <TextCard
-            title="Exames Recentes"
-            text={
-               <>
-                  <b>Hemograma:</b> Lorem ipsum
-                  <br />
-                  <br />
-                  <b>Ressonância:</b> Lorem ipsum assum
-               </>
-            }
-         />
+                        <TableCard
+                           title="Hábitos de Vida"
+                           columns={[
+                              { key: 'habito', label: 'HÁBITO' },
+                              { key: 'descricao', label: 'DESCRIÇÃO / FREQUÊNCIA' },
+                           ]}
+                           data={[
+                              { habito: 'Tabagismo', descricao: 'Ativo / Severo (20 cigarrinhos/dia)' },
+                              { habito: 'Cafeína', descricao: 'Elevado (4 a 6 xícaras/dia)' },
+                              { habito: 'Atividade Física', descricao: 'Sedentário' },
+                              { habito: 'Etilismo', descricao: 'Social / Nega uso abusivo' },
+                           ]}
+                        />
 
-         <TextCard
-            title="Documentos"
-            text={
-               <>
-                  <b>Laudo médico:</b> <span className="text-blue-600 underline cursor-pointer">Visualizar</span>
-                  <br />
-                  <br />
-                  <b>Ressonância:</b> <span className="text-blue-600 underline cursor-pointer">Visualizar</span>
-               </>
-            }
-         />
+                        <TextCard
+                           title="Resumo Clínico"
+                           text={
+                             <>
+                               <p className="font-semibold text-slate-700 mb-1">Histórico Familiar:</p>
+                               <ul className="list-disc list-inside space-y-1 text-slate-600 mb-3">
+                                 <li><strong>Pai (falecido, 62a):</strong> HAS, DM2 e DAC. Óbito por IAM.</li>
+                                 <li><strong>Mãe (68a):</strong> Câncer de mama aos 54a (em remissão), dislipidemia.</li>
+                                 <li><strong>Irmão (45a):</strong> Pré-diabetes e dislipidemia mista.</li>
+                                 <li><strong>Avós Maternos:</strong> AVC Isquêmico (avô) e Alzheimer (avó).</li>
+                               </ul>
+
+                               <p className="font-semibold text-slate-700 mb-1">Síntese / Hipótese:</p>
+                               <p className="text-slate-600">
+                                 Risco cardiovascular aumentado (HAS/DM2/IAM em parente de 1º grau) e predisposição oncogenética (Ca de mama familiar).
+                               </p>
+                             </>
+                           }
+                        />
+
+                        <TableCard
+                           title="Medicamentos e Prescrições"
+                           columns={colunasMedicamento}
+                           data={dadosMedicamentos}
+                        />
+                     </div>
+                  </>
+               }
+            />
+         </div>
+
+         <div className="col-span-2">
+            <TextCard
+               title="Documentos"
+               text={
+                  <>
+                     <b>Laudo médico:</b> <span className="text-blue-600 underline cursor-pointer">Visualizar</span>
+                     <br />
+                     <br />
+                     <b>Ressonância:</b> <span className="text-blue-600 underline cursor-pointer">Visualizar</span>
+                  </>
+               }
+            />
+         </div>
      </div>
    );
 }
