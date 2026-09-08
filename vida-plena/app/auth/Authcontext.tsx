@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { authService } from '../services/authService'
+import { getAccessToken, setAccessToken } from '../../api'
 import type { UsuarioResponse, TipoUsuario, LoginRequest } from '../types/auth'
 
 interface AuthContextData {
@@ -34,6 +35,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let active = true
 
     async function hydrateSession() {
+      const token = getAccessToken()
+      if (!token) {
+        setUsuario(null)
+        setIsLoading(false)
+        return
+      }
+
       try {
         const perfil = await authService.getMeuPerfil()
         if (active) setUsuario(perfil)
@@ -52,8 +60,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [pathname])
 
   const login = useCallback(async (credentials: LoginRequest) => {
-    await authService.login(credentials)
-    const perfil = await authService.getMeuPerfil()
+    const authData = await authService.login(credentials)
+    const perfil = authData.usuario || (await authService.getMeuPerfil())
     setUsuario(perfil)
     router.replace(getHomeByRole(perfil.tipos))
   }, [router])

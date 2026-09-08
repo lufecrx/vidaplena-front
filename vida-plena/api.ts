@@ -1,26 +1,38 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 
-// Token vive apenas em memória — nunca em localStorage
+const TOKEN_STORAGE_KEY = 'vidaplena_token'
+
 let accessToken: string | null = null
 
 export function setAccessToken(token: string | null) {
   accessToken = token
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem(TOKEN_STORAGE_KEY, token)
+    } else {
+      localStorage.removeItem(TOKEN_STORAGE_KEY)
+    }
+  }
 }
 
-export function getAccessToken() {
+export function getAccessToken(): string | null {
+  if (!accessToken && typeof window !== 'undefined') {
+    accessToken = localStorage.getItem(TOKEN_STORAGE_KEY)
+  }
   return accessToken
 }
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080',
   headers: { 'Content-Type': 'application/json' },
-  withCredentials: true, // envia o refreshToken cookie httpOnly
+  withCredentials: true, // envia o refreshToken cookie httpOnly caso disponível
 })
 
 // ── Request: injeta Bearer token ──────────────────────────────────────────
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`
+  const token = getAccessToken()
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
   return config
 })
@@ -50,6 +62,21 @@ api.interceptors.response.use(
       return Promise.reject(error)
     }
 
+    // Se for endpoint de autenticação pública, não intercepta para refresh
+    if (
+      original.url?.includes('/api/v1/auth/login') ||
+      original.url?.includes('/api/v1/auth/forgot-password') ||
+      original.url?.includes('/api/v1/auth/reset-password')
+    ) {
+      return Promise.reject(error)
+    }
+
+    // Se não há token ativo (nenhuma sessão iniciada), rejeita sem redirecionar
+    const activeToken = getAccessToken()
+    if (!activeToken) {
+      return Promise.reject(error)
+    }
+
     if (isRefreshing) {
       // Outros pedidos aguardam o refresh terminar
       return new Promise((resolve, reject) => {
@@ -64,22 +91,30 @@ api.interceptors.response.use(
     isRefreshing = true
 
     try {
-      // O refreshToken vem via cookie httpOnly — basta chamar o endpoint
-      const { data } = await axios.post<{ token: string }>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/refresh`,
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080'
+      // O refreshToken viria via cookie httpOnly
+      const { data } = await axios.post<{ token?: string; accessToken?: string }>(
+        `${baseUrl}/api/v1/auth/refresh`,
         {},
         { withCredentials: true },
       )
 
-      setAccessToken(data.token)
-      processQueue(null, data.token)
-      original.headers.Authorization = `Bearer ${data.token}`
+      const novoToken = data.accessToken || data.token
+      if (!novoToken) {
+        throw new Error('Refresh token não retornou novo token')
+      }
+
+      setAccessToken(novoToken)
+      processQueue(null, novoToken)
+      original.headers.Authorization = `Bearer ${novoToken}`
       return api(original)
     } catch (refreshError) {
       processQueue(refreshError, null)
+      const hadSession = !!getAccessToken()
       setAccessToken(null)
-      // Redireciona para login
-      if (typeof window !== 'undefined') {
+
+      // Redireciona para login apenas se não estiver já na tela de login e se havia sessão iniciada
+      if (typeof window !== 'undefined' && window.location.pathname !== '/login' && hadSession) {
         window.location.href = '/login'
       }
       return Promise.reject(refreshError)
