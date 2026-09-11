@@ -1,5 +1,5 @@
 import { api, setAccessToken } from '../../api'
-import type { AuthResponse, LoginRequest, UsuarioResponse } from '../types/auth'
+import type { AuthResponse, AtualizarMeuPerfilRequest, LoginRequest, UsuarioResponse } from '../types/auth'
 
 export const authService = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
@@ -10,6 +10,11 @@ export const authService = {
 
   async getMeuPerfil(): Promise<UsuarioResponse> {
     const { data } = await api.get<UsuarioResponse>('/api/v1/usuarios/me')
+    return data
+  },
+
+  async atualizarMeuPerfil(dados: AtualizarMeuPerfilRequest): Promise<UsuarioResponse> {
+    const { data } = await api.patch<UsuarioResponse>('/api/v1/usuarios/me', dados)
     return data
   },
 

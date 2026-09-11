@@ -36,12 +36,17 @@ export interface CadastrarProfissional {
    clinicaId: string;
 }
 
-export type AtualizarProfissional = Partial<CadastrarProfissional>;
+export type AtualizarProfissional = CadastrarProfissional;
 
 export const profissionalService = {
+      async obterProfissionalPorUsuarioId(usuarioId: string): Promise<RetornaProfissional | null> {
+         const profissionais = await this.listarProfissionais();
+         return profissionais.find((item) => item.usuarioId === usuarioId) ?? null;
+      },
+
     async listarProfissionais(filtros?:FiltrosProfissional) : Promise<RetornaProfissional[]>{
       await new Promise(resolve => setTimeout(resolve, 1000)); //so pra vizualizar
-        const response = await api.get('/api/profissionais', { params: filtros });
+      const response = await api.get('/api/v1/profissionais', { params: filtros });
         let dados = response.data;
         if (filtros && filtros.especialidade) {
             dados = dados.filter(
@@ -52,19 +57,19 @@ export const profissionalService = {
         return dados;
     },
     async obterProfissional(id: string): Promise<RetornaProfissional> {
-     const response = await api.get(`/api/profissionais/${id}`);
+   const response = await api.get(`/api/v1/profissionais/${id}`);
      return response.data;
     },
     async cadastrarProfissional(dados: CadastrarProfissional) {
-      const { data } = await api.post('/api/profissionais', dados);
+      const { data } = await api.post('/api/v1/profissionais', dados);
       return data;
    },
    async atualizarProfissional(id: string, dados: AtualizarProfissional) {
-      const response = await api.put(`/api/profissionais/${id}`, dados);
+      const response = await api.put(`/api/v1/profissionais/${id}`, dados);
       return response.data;
    },
    async excluirProfissional(id: string) {
-      const result = await api.delete(`/api/profissionais/${id}`);
+      const result = await api.delete(`/api/v1/profissionais/${id}`);
       return result.data;
    }
 };
