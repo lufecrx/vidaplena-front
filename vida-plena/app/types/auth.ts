@@ -9,10 +9,22 @@ export interface UsuarioResponse {
   email: string
   cpf: string
   telefone?: string
+  senha?: string
+  dataNascimento: string
   fotoPerfil?: string
   status: 'ATIVO' | 'INATIVO'
   tipos: TipoUsuario[]
   dataCriacao: string
+}
+
+export interface AtualizarMeuPerfilRequest {
+  nome: string
+  cpf: string
+  email: string
+  senha: string
+  telefone: string
+  dataNascimento: string
+  tipos: TipoUsuario[]
 }
 
 export interface LoginRequest {

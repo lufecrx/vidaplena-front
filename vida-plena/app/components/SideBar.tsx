@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
+import { ChevronLeft, ChevronRight, ChevronDown, Settings, UserRound } from 'lucide-react'
 import { useAuth } from '../auth/Authcontext'
 import { getNavForUser } from '../lib/Navegation'
 import Button from './Button'
@@ -16,6 +17,19 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const { usuario } = useAuth()
   const pathname = usePathname()
+  const router = useRouter()
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const profileMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function closeProfileMenu(event: MouseEvent) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', closeProfileMenu)
+    return () => document.removeEventListener('mousedown', closeProfileMenu)
+  }, [])
 
   const navGroups = usuario ? getNavForUser(usuario.tipos) : []
 
@@ -93,8 +107,15 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         <>
           <div className="mx-4 h-px bg-white/10 mt-auto" />
 
-          <div className="p-3 flex justify-center">
-            <div className="flex items-center gap-3">
+          <div className="relative p-3 flex justify-center" ref={profileMenuRef}>
+            <button
+              type="button"
+              className="flex max-w-full items-center gap-3 rounded-xl p-2 text-left transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-vp-verde-500/70"
+              onClick={() => setProfileMenuOpen((open) => !open)}
+              aria-expanded={profileMenuOpen}
+              aria-haspopup="menu"
+              title="Abrir menu do usuário"
+            >
               <div
                 className="h-8 w-8 shrink-0 rounded-full bg-[#4DBFA8] flex items-center justify-center text-[#1A3A5C] text-xs font-bold"
                 title={usuario.nome}
@@ -109,7 +130,21 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                   <p className="truncate text-xs text-white/50">{usuario.tipos[0]}</p>
                 </div>
               )}
-            </div>
+              {!isCollapsed && <ChevronDown className={`h-4 w-4 shrink-0 text-white/60 transition-transform ${profileMenuOpen ? 'rotate-180' : ''}`} />}
+            </button>
+
+            {profileMenuOpen && (
+              <div className={`absolute bottom-16 z-50 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg ${isCollapsed ? 'left-16' : 'left-3'}`} role="menu">
+                <button type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); router.push('/configuracoes/dados-pessoais') }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-700 transition hover:bg-slate-50">
+                  <UserRound className="h-4 w-4 text-vp-azul-700" />
+                  Atualizar dados
+                </button>
+                <button type="button" role="menuitem" onClick={() => { setProfileMenuOpen(false); router.push('/configuracoes') }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-700 transition hover:bg-slate-50">
+                  <Settings className="h-4 w-4 text-vp-azul-700" />
+                  Configurações
+                </button>
+              </div>
+            )}
           </div>
         </>
       )}
