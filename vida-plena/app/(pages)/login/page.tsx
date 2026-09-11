@@ -241,6 +241,13 @@ export default function Login() {
                     </Link>
                 </div>
 
+                <p className="text-sm text-gray-600">
+                    Ainda não tem uma conta?{" "}
+                    <Link href="/cadastro" className="font-medium text-vp-azul-700 hover:underline">
+                        Cadastre-se
+                    </Link>
+                </p>
+
                 <Button
                     variant="primary"
                     size="md"

@@ -88,7 +88,7 @@ function AuthSidePanel() {
     return (
         <>
             <div
-                className="hidden md:flex relative overflow-hidden w-full md:max-w-5/12 h-24 md:h-3/4 rounded-t-lg md:rounded-t-none md:rounded-r-lg md:shadow-lg flex-col justify-between p-10 bg-brand-primary "
+                className="hidden md:flex relative min-h-0 h-[75vh] w-full md:max-w-5/12 overflow-hidden rounded-t-lg md:rounded-t-none md:rounded-r-lg md:shadow-lg flex-col justify-between p-10 bg-brand-primary"
                 aria-hidden="true"
             >
                 <span className="vp-mono text-[11px] uppercase tracking-[0.18em] text-white">
@@ -122,10 +122,10 @@ function AuthSidePanel() {
 
 export function AuthPageLayout({ children }: { children: ReactNode }) {
     return (
-        <div className="flex flex-col-reverse md:flex-row items-center justify-center h-screen w-full p-4 md:p-0 bg-[#F3F6F1]">
+        <div className="flex h-screen w-full flex-col-reverse items-center justify-start overflow-y-auto bg-[#F3F6F1] p-4 md:flex-row md:items-center md:justify-center md:overflow-hidden md:p-0">
 
-            <div className="flex flex-col items-center justify-center w-full md:max-w-5/12 h-auto md:h-3/4 p-6 bg-white rounded-b-lg md:rounded-b-none md:rounded-l-lg shadow-lg">
-                <div className="flex flex-col items-center justify-center w-full sm:w-5/6 md:w-2/3 h-full">
+            <div className="flex min-h-0 h-[calc(100vh-8rem)] w-full max-w-2xl flex-col items-center justify-start overflow-hidden rounded-b-lg bg-white p-6 shadow-lg md:h-[75vh] md:max-w-5/12 md:justify-center md:rounded-b-none md:rounded-l-lg">
+                <div className="flex h-full min-h-0 w-full flex-col items-center justify-start overflow-y-auto py-2 pr-1 sm:w-5/6 md:pr-2">
                     {children}
                 </div>
             </div>

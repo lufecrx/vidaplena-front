@@ -12,7 +12,7 @@ export interface UsuarioResponse {
   senha?: string
   dataNascimento: string
   fotoPerfil?: string
-  status: 'ATIVO' | 'INATIVO'
+  status: 'ATIVO' | 'INATIVO' | 'PENDENTE_VALIDACAO' | 'BLOQUEADO'
   tipos: TipoUsuario[]
   dataCriacao: string
 }

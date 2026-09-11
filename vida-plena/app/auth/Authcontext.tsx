@@ -22,7 +22,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 // Rotas que não exigem sessão — evita bater em /me e /refresh à toa
-const PUBLIC_ROUTES = ['/login']
+const PUBLIC_ROUTES = ['/login', '/cadastro', '/redefinir-senha', '/recuperar-senha']
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [usuario, setUsuario] = useState<UsuarioResponse | null>(null)

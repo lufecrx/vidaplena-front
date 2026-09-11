@@ -1,7 +1,13 @@
 import { api, setAccessToken } from '../../api'
 import type { AuthResponse, AtualizarMeuPerfilRequest, LoginRequest, UsuarioResponse } from '../types/auth'
+import type { CriarUsuarioRequest } from '../types/usuario'
 
 export const authService = {
+  async register(data: CriarUsuarioRequest) {
+    const { data: response } = await api.post('/api/v1/auth/register', data)
+    return response
+  },
+
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     const { data } = await api.post<AuthResponse>('/api/v1/auth/login', credentials)
     setAccessToken(data.accessToken)
