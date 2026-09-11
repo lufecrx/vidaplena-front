@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "outline" | "danger" | "transparent";
+type Variant = "primary" | "secondary" | "outline" | "danger" | "transparent" | "underline";
 type Size = "sm" | "md" | "lg";
 
 
@@ -21,6 +21,7 @@ const variantStyles: Record<Variant, string> = {
   outline:"border border-vp-azul-700 text-vp-azul-700 hover:bg-gray-50 focus:ring-gray-400",
   danger: "bg-vp-coral-500 text-white hover:bg-vp-coral-700 focus:ring-vp-coral-500",
   transparent: "bg-transparent text-vp-azul-700 hover:bg-gray-50 focus:ring-gray-400",
+  underline: "bg-transparent px-0 text-vp-azul-700 underline decoration-vp-azul-700/40 underline-offset-4 hover:text-vp-azul-900 hover:decoration-vp-azul-900 focus:ring-gray-400",
 };
 
 const sizeStyles: Record<Size, string> = {

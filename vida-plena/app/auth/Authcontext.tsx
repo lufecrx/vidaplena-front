@@ -3,7 +3,11 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { authService } from '../services/authService'
-import type { UsuarioResponse, TipoUsuario, LoginRequest } from '../types/auth'
+import { pacienteService } from '../services/pacienteService'
+import { profissionalService } from '../services/profissionalService'
+import { empresaService } from '../services/empresaService'
+import type { AtualizarMeuPerfilRequest, UsuarioResponse, TipoUsuario, LoginRequest } from '../types/auth'
+import axios from 'axios'
 
 interface AuthContextData {
   usuario: UsuarioResponse | null
@@ -11,6 +15,7 @@ interface AuthContextData {
   isLoading: boolean
   login: (credentials: LoginRequest) => Promise<void>
   logout: () => Promise<void>
+  atualizarUsuario: (dados: AtualizarMeuPerfilRequest) => Promise<void>
   hasRole: (...roles: TipoUsuario[]) => boolean
 }
 
@@ -55,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await authService.login(credentials)
     const perfil = await authService.getMeuPerfil()
     setUsuario(perfil)
-    router.replace(getHomeByRole(perfil.tipos))
+    router.replace(await getHomeAfterRegistrationCheck(perfil))
   }, [router])
 
   const logout = useCallback(async () => {
@@ -63,6 +68,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUsuario(null)
     router.replace('/login')
   }, [router])
+
+  const atualizarUsuario = useCallback(async (dados: AtualizarMeuPerfilRequest) => {
+    const perfil = await authService.atualizarMeuPerfil(dados)
+    setUsuario(perfil)
+  }, [])
 
   const hasRole = useCallback(
     (...roles: TipoUsuario[]) => {
@@ -74,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ usuario, isAuthenticated: !!usuario, isLoading, login, logout, hasRole }}
+      value={{ usuario, isAuthenticated: !!usuario, isLoading, login, logout, atualizarUsuario, hasRole }}
     >
       {children}
     </AuthContext.Provider>
@@ -91,9 +101,43 @@ function getHomeByRole(tipos: TipoUsuario[]): string {
   if (tipos.includes('ADMINISTRADOR')) return '/admin/dashboard'
   if (tipos.includes('GESTOR')) return '/gestor/dashboard'
   if (tipos.includes('FINANCEIRO')) return '/financeiro/dashboard'
-  if (tipos.includes('MEDICO') || tipos.includes('PROFISSIONAL')) return '/profissionais/dashboard'
+  if (tipos.some((tipo) => ['MEDICO', 'PROFISSIONAL', 'NUTRICIONISTA', 'PERSONAL_TRAINER'].includes(tipo))) {
+    return '/profissionais/dashboard'
+  }
   if (tipos.includes('RECEPCIONISTA')) return '/recepcionista/agendamentos'
   if (tipos.includes('FARMACIA')) return '/farmacia/receitas'
   if (tipos.includes('REPRESENTANTE_EMPRESA')) return '/empresa/dashboard'
   return '/paciente/dashboard'
+}
+
+async function getHomeAfterRegistrationCheck(perfil: UsuarioResponse): Promise<string> {
+  if (perfil.tipos.some((tipo) => ['MEDICO', 'PROFISSIONAL', 'NUTRICIONISTA', 'PERSONAL_TRAINER'].includes(tipo))) {
+    try {
+      const profissional = await profissionalService.obterProfissionalPorUsuarioId(perfil.id)
+      if (!profissional) return '/cadastro-especifico'
+    } catch (error) {
+      throw error
+    }
+  }
+
+  if (perfil.tipos.includes('PACIENTE')) {
+    try {
+      const paciente = await pacienteService.getPacientePorUsuarioId(perfil.id)
+      if (!paciente) return '/cadastro-especifico'
+    } catch (error) {
+      if (isMissingRegistrationError(error)) return '/cadastro-especifico'
+      throw error
+    }
+  }
+
+  if (perfil.tipos.includes('REPRESENTANTE_EMPRESA')) {
+    const empresa = await empresaService.obterEmpresaPorUsuarioId(perfil.id)
+    if (!empresa) return '/cadastro-especifico'
+  }
+
+  return getHomeByRole(perfil.tipos)
+}
+
+function isMissingRegistrationError(error: unknown): boolean {
+  return axios.isAxiosError(error) && [404, 422].includes(error.response?.status ?? 0)
 }
