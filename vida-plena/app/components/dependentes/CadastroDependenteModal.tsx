@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   X,
   Baby,
@@ -14,13 +14,10 @@ import {
   ArrowRight,
   ArrowLeft,
   Check,
-  User,
-  Activity,
   KeyRound,
 } from 'lucide-react'
 import {
   TipoDependencia,
-  TipoSanguineo,
   TIPO_SANGUINEO_MAP,
   CadastroDependenteRequestDTO,
   DependenteResponseDTO,
@@ -175,6 +172,7 @@ export function CadastroDependenteModal({
 
   // Validação do Step 1 antes de avançar
   function validarStep1(): boolean {
+    setErroApi(null)
     const res = validarFormularioDependente(
       {
         nome,
@@ -202,7 +200,15 @@ export function CadastroDependenteModal({
     e.preventDefault()
     setErroApi(null)
 
-    // Validação completa
+    // Se estiver na primeira etapa (dados básicos/pessoais), avançar para dados clínicos
+    if (currentStep === 'basicos') {
+      if (validarStep1()) {
+        setCurrentStep('clinicos')
+      }
+      return
+    }
+
+    // Validação completa antes de enviar à API
     const res = validarFormularioDependente(
       {
         nome,
@@ -219,7 +225,13 @@ export function CadastroDependenteModal({
     if (!res.valido) {
       setErros(res.erros)
       // Se o erro for de campos do step 1 e estivermos no step 2, volta para o 1
-      if (res.erros.nome || res.erros.cpf || res.erros.dataNascimento || res.erros.tipo) {
+      if (
+        res.erros.nome ||
+        res.erros.cpf ||
+        res.erros.dataNascimento ||
+        res.erros.tipo ||
+        res.erros.dataInicio
+      ) {
         setCurrentStep('basicos')
       }
       return
@@ -290,17 +302,17 @@ export function CadastroDependenteModal({
             className={`flex items-center gap-2 text-xs font-bold transition-colors ${
               currentStep === 'basicos'
                 ? 'text-emerald-700'
-                : 'text-slate-400 hover:text-slate-600'
+                : 'text-slate-600 hover:text-slate-800'
             }`}
           >
             <div
               className={`w-7 h-7 rounded-full flex items-center justify-center text-xs ${
                 currentStep === 'basicos'
                   ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600'
+                  : 'bg-emerald-100 text-emerald-700 font-bold'
               }`}
             >
-              1
+              {currentStep === 'clinicos' ? <Check className="w-3.5 h-3.5" /> : '1'}
             </div>
             <span>Dados Pessoais</span>
           </button>
@@ -797,6 +809,7 @@ export function CadastroDependenteModal({
           <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-6">
             {currentStep === 'clinicos' ? (
               <Button
+                key="btn-voltar-basicos"
                 type="button"
                 variant="outline"
                 onClick={() => setCurrentStep('basicos')}
@@ -808,6 +821,7 @@ export function CadastroDependenteModal({
               </Button>
             ) : (
               <Button
+                key="btn-cancelar-modal"
                 type="button"
                 variant="outline"
                 onClick={handleClose}
@@ -819,8 +833,10 @@ export function CadastroDependenteModal({
 
             {currentStep === 'basicos' ? (
               <Button
+                key="btn-proximo-clinicos"
                 type="button"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault()
                   if (validarStep1()) {
                     setCurrentStep('clinicos')
                   }
@@ -832,6 +848,7 @@ export function CadastroDependenteModal({
               </Button>
             ) : (
               <Button
+                key="btn-salvar-dependente"
                 type="submit"
                 loading={isSubmitting}
                 disabled={isSubmitting}
