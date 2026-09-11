@@ -26,6 +26,7 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
       group: 'Usuários',
       items: [
         { label: 'Usuários', href: '/admin/usuarios', icon: 'Users' },
+        { label: 'Dependentes', href: '/paciente/dependentes', icon: 'Users' },
         //{ label: 'Permissões', href: '/admin/permissoes', icon: 'ShieldCheck' },
         //{ label: 'Log de Auditoria', href: '/admin/auditoria', icon: 'ClipboardList' },
       ],
@@ -203,6 +204,7 @@ const NAV_BY_ROLE: Record<string, NavGroup[]> = {
         //{ label: 'Agendamentos', href: '/paciente/agendamentos', icon: 'CalendarDays' },
         { label: 'Prontuário', href: '/paciente/prontuario', icon: 'FileText' },
         { label: 'Métricas', href: '/paciente/metricas', icon: 'Activity' },
+        { label: 'Dependentes', href: '/paciente/dependentes', icon: 'Users' },
         //{ label: 'Medicamentos', href: '/paciente/medicamentos', icon: 'Pill' },
         //{ label: 'Meu Plano', href: '/paciente/plano', icon: 'PackageCheck' },
       ],
@@ -288,7 +290,7 @@ export function getCurrentNavLabel(
 
   for (const group of nav) {
     for (const item of group.items) {
-      if (item.href === pathname) {
+      if (item.href === pathname || (item.href === '/paciente/dependentes' && pathname === '/dependentes')) {
         return item.label
       }
 
